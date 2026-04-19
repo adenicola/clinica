@@ -1,0 +1,54 @@
+target/
+odm/src/main/java/
+odm/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+.classpath
+.project
+.settings/
+.idea/
+.vscode/
+LibreClinica.iml
+OpenClinica.iml
+web/src/main/resources/datainfo.properties
+core/*.iml
+odm/*.iml
+docs/*.iml
+web/*.iml
+ws/*.iml
+.DS_Store
+core/.DS_Store
+web/.DS_Store
+ws/.DS_Store
+Thumbs.db
+
+# git
+*.orig
+
+# netbeans
+nb-configuration.xml
+/.README.md.html
+
+# build artifacts
+*.war
+*.jar
+
+# node / caches
+node_modules/
+.m2/
+
+# docker / logs
+*.log
+logs/
+data/
+
+# temp
+tmp/
+temp/
+
+# local artifacts
+build.log
+cookies.txt

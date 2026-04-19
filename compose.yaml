@@ -1,0 +1,61 @@
+services:
+  libreclinica:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - libreclinica_data:/usr/local/tomcat/libreclinica.data
+      - libreclinica_logs:/usr/local/tomcat/logs
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./docker/config
+          target: /usr/local/tomcat/libreclinica.config
+
+        - action: rebuild
+          path: ./pom.xml
+
+        - action: rebuild
+          path: ./core
+
+        - action: rebuild
+          path: ./odm
+
+        - action: rebuild
+          path: ./ws
+
+        - action: rebuild
+          path: ./web/pom.xml
+
+        - action: rebuild
+          path: ./web/src/main/java
+
+        - action: rebuild
+          path: ./web/src/main/resources
+
+        - action: rebuild
+          path: ./web/src/main/webapp/WEB-INF
+
+        - action: rebuild
+          path: ./web/src/main/webapp/decorator.jsp
+
+  db:
+    image: docker.io/library/postgres:14-alpine
+    environment:
+      POSTGRES_PASSWORD: clinica
+      POSTGRES_USER: clinica
+      POSTGRES_DB: libreclinica
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  smtp:
+    image: docker.io/marlonb/mailcrab:v1.1.0
+    ports:
+      - "127.0.0.1:1080:1080"
+
+volumes:
+  postgres_data:
+  libreclinica_data:
+  libreclinica_logs:

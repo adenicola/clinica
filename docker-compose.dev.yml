@@ -1,0 +1,23 @@
+services:
+  libreclinica:
+    develop:
+      watch:
+        - action: sync
+          path: ./web/src/main/webapp/includes
+          target: /usr/local/tomcat/webapps/LibreClinica/includes
+
+        - action: sync
+          path: ./web/src/main/webapp/images
+          target: /usr/local/tomcat/webapps/LibreClinica/images
+
+        - action: sync
+          path: ./web/src/main/webapp/css
+          target: /usr/local/tomcat/webapps/LibreClinica/css
+
+        - action: sync
+          path: ./web/src/main/webapp/js
+          target: /usr/local/tomcat/webapps/LibreClinica/js
+
+        - action: sync
+          path: ./web/src/main/webapp/gwt
+          target: /usr/local/tomcat/webapps/LibreClinica/gwt

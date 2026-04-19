@@ -1,0 +1,32 @@
+/* CSS Document */
+
+/* general style propertyies */
+
+body.login_BG {}
+/*
+the following classes have been moved to styles.css
+div.login_BG {padding-top: 117px; }
+
+#logo { background: url(../images/login_logo.png) no-repeat top left; width: 428px; height: 112px; }
+
+.loginBoxes { margin-bottom: 100px; }
+
+.loginBoxes td { width: 310px; vertical-align: top; text-align: left; }
+
+.loginBox_T { }
+
+.loginBox { }
+
+#loginBox { padding: 10px 28px; background-color: var(--lightblue-l20); }
+
+#loginBox H1, #loginBox a { color: var(--lightblue-d20); }
+
+.loginBox form, .loginBox H1 { margin-top: 0px; }
+
+.loginBox li, .loginBox ul { list-style-image: url(../images/bullet.gif); margin-left: 7px; padding-left: 7px; }
+
+.loginBox li { margin-bottom: 13px; }
+
+.footer { background-image: url(../images/login_footer_BG.gif); }
+
+*/

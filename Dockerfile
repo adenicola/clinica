@@ -1,0 +1,36 @@
+FROM docker.io/library/maven:3-eclipse-temurin-8 AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN \
+    --mount=type=cache,target=/root/.m2 \
+    --mount=type=cache,target=/app/core/target \
+    --mount=type=cache,target=/app/docs/target \
+    --mount=type=cache,target=/app/odm/target \
+    --mount=type=cache,target=/app/web/target \
+    --mount=type=cache,target=/app/ws/target \
+    set -eux; \
+    mvn package; \
+    mv web/target/LibreClinica-web-*.war /LibreClinica-web.war;
+
+############################################################
+FROM tomcat:9-jdk11
+
+RUN set -eux; \
+    mkdir /usr/local/tomcat/webapps/ROOT; \
+    echo '<html><head><meta http-equiv="refresh" content="0; URL=LibreClinica/" /></head></html>' \
+        > /usr/local/tomcat/webapps/ROOT/index.html;
+
+VOLUME \
+    /usr/local/tomcat/libreclinica.data \
+    /usr/local/tomcat/logs
+
+COPY \
+    /docker/config/ \
+    /usr/local/tomcat/libreclinica.config/
+
+COPY --from=builder \
+    /LibreClinica-web.war \
+    /usr/local/tomcat/webapps/LibreClinica.war
