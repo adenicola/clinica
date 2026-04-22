@@ -1391,7 +1391,6 @@ function setImageWithTitle(strImageName, strImageFullPath, strTitle) {
 }
 
 function leftnavExpand(strLeftNavRowElementName){
-
     var objLeftNavRowElement;
 
     objLeftNavRowElement = MM_findObj(strLeftNavRowElementName);
@@ -1410,11 +1409,20 @@ function layersShowOrHide() {
     var arrayArgs = layersShowOrHide.arguments;
     var objLayer;
     var strShowOrHide = arrayArgs[0];
+    var originalLayer;
     var i;
 
     for (i=1;i<=arrayArgs.length-1;i++) {
         if ((objLayer=MM_findObj(arrayArgs[i]))!=null) {
             // for IE and NS compatibility
+            originalLayer = objLayer;
+            if (strShowOrHide == 'hidden' &&
+                originalLayer.id &&
+                originalLayer.id.indexOf('Event_') === 0 &&
+                originalLayer.getAttribute &&
+                originalLayer.getAttribute('data-pinned') === 'true') {
+                continue;
+            }
             if (objLayer.style) { objLayer = objLayer.style; }
             objLayer.visibility = strShowOrHide;
         }
@@ -1487,82 +1495,81 @@ function getObject( obj ) {
     return obj;
 }
 
+function getContextMenuIdFromLock(lockId) {
+    if (typeof lockId !== 'string' || lockId.indexOf('Lock_') !== 0) {
+        return null;
+    }
+
+    return lockId.replace('Lock_', 'Event_');
+}
+
+function getContextIconIdFromLock(lockId) {
+    if (typeof lockId !== 'string' || lockId.indexOf('Lock_') !== 0) {
+        return null;
+    }
+
+    return lockId.replace('Lock_', 'CRFicon_');
+}
+
+function isContextMenuVisible(menuId) {
+    var menu = getObject(menuId);
+
+    return !!(menu && menu.style && menu.style.visibility !== 'hidden' && menu.style.display !== 'none');
+}
+
 function LockObject( obj, e ) {
-
-    // step 1
-    var tempX = 0;
-    var tempY = 0;
-    var offsetx = -17;
-    var offsety = -15;
     var objHolder = obj;
+    var lock = getObject(obj);
+    var anchor = getContextAnchorElement(e);
+    var menuId = getContextMenuIdFromLock(objHolder);
+    var iconId = getContextIconIdFromLock(objHolder);
+    var menu = menuId ? getObject(menuId) : null;
+    var rect;
 
-    // step 2
-    obj = getObject( obj );
-    if (obj==null) return;
-
-    // step 3
-    if (!e) var e = window.event;
-    if (e.pageX || e.pageY) 	{
-        tempX = e.pageX;
-        tempY = e.pageY;
-    }
-    else if (e.clientX || e.clientY) 	{
-        tempX = e.clientX + document.body.scrollLeft
-                + document.documentElement.scrollLeft;
-        tempY = e.clientY + document.body.scrollTop
-                + document.documentElement.scrollTop;
+    if (lock == null || !anchor || !anchor.getBoundingClientRect) {
+        return;
     }
 
-    // step 4
-    if (tempX < 0){tempX = 0}
-    if (tempY < 0){tempY = 0}
+    if (e && e.preventDefault) {
+        e.preventDefault();
+    }
+    if (e && e.stopPropagation) {
+        e.stopPropagation();
+    }
+    if (e) {
+        e.cancelBubble = true;
+    }
 
-    // step 5
-    obj.style.top  = (tempY + offsety) + 'px';
-    obj.style.left = (tempX + offsetx) + 'px';
+    if (menuId && menu != null && menu.getAttribute('data-pinned') === 'true' && isContextMenuVisible(menuId)) {
+        hideContextMenu(menuId, iconId, objHolder);
+        return false;
+    }
 
-    // step 6
-    displayObject( objHolder, true );
+    hideAllContextMenus(menuId);
+
+    rect = anchor.getBoundingClientRect();
+    ensureContextLayerOnBody(lock);
+    lock.style.top = rect.top + 'px';
+    lock.style.left = rect.left + 'px';
+    lock.style.width = rect.width + 'px';
+    lock.style.height = rect.height + 'px';
+    lock.style.zIndex = '9998';
+
+    displayObject(objHolder, true);
+
+    if (menu != null) {
+        positionContextLayer(menu, anchor, 0, 6);
+        menu.setAttribute('data-pinned', 'true');
+    }
+
+    layersShowOrHide('visible', 'Lock_all');
+    return false;
 }
 
 
 
 function moveObject( obj, e ) {
-
-    // step 1
-    var tempX = 0;
-    var tempY = 0;
-    var offsetx = -2;
-    var offsety = 10;
-    var objHolder = obj;
-
-    // step 2
-    obj = getObject( obj );
-    if (obj==null) return;
-
-    // step 3
-    if (!e) var e = window.event;
-    if (e.pageX || e.pageY) 	{
-        tempX = e.pageX;
-        tempY = e.pageY;
-    }
-    else if (e.clientX || e.clientY) 	{
-        tempX = e.clientX + document.body.scrollLeft
-                + document.documentElement.scrollLeft;
-        tempY = e.clientY + document.body.scrollTop
-                + document.documentElement.scrollTop;
-    }
-
-    // step 4
-    if (tempX < 0){tempX = 0}
-    if (tempY < 0){tempY = 0}
-
-    // step 5
-    obj.style.top  = (tempY + offsety) + 'px';
-    obj.style.left = (tempX + offsetx) + 'px';
-
-    // step 6
-    displayObject( objHolder, true );
+    return false;
 }
 
 
@@ -1576,6 +1583,230 @@ function displayObject( obj, show ) {
     // step 2
     obj.style.display = show ? 'block' : 'none';
     obj.style.visibility = show ? 'visible' : 'hidden';
+    if (!show && obj.id && obj.id.indexOf('Event_') === 0) {
+        obj.setAttribute('data-pinned', 'false');
+    }
+}
+
+function getContextAnchorElement(anchorSource) {
+    var anchor = null;
+
+    if (anchorSource && anchorSource.nodeType === 1) {
+        anchor = anchorSource;
+    }
+    else if (anchorSource) {
+        anchor = anchorSource.currentTarget || anchorSource.target || anchorSource.srcElement || null;
+    }
+
+    while (anchor && anchor.nodeType === 1 && anchor.tagName && anchor.tagName.toLowerCase() !== 'a') {
+        anchor = anchor.parentNode;
+    }
+
+    return anchor;
+}
+
+function ensureContextLayerOnBody(obj) {
+    if (!obj) {
+        return;
+    }
+
+    if (obj.parentNode !== document.body) {
+        document.body.appendChild(obj);
+    }
+
+    obj.style.position = 'fixed';
+}
+
+function positionContextLayer(obj, anchorSource, offsetX, offsetY) {
+    var anchor = getContextAnchorElement(anchorSource);
+    var top = 8;
+    var left = 8;
+    var viewportWidth;
+    var viewportHeight;
+    var layerWidth;
+    var layerHeight;
+    var anchorRect;
+
+    if (!obj) {
+        return;
+    }
+
+    ensureContextLayerOnBody(obj);
+
+    obj.style.display = 'block';
+    obj.style.visibility = 'hidden';
+    obj.style.maxHeight = '70vh';
+    obj.style.overflowY = 'auto';
+    obj.style.overflowX = 'hidden';
+    obj.style.zIndex = '10000';
+
+    layerWidth = obj.offsetWidth || obj.scrollWidth || 280;
+    layerHeight = obj.offsetHeight || obj.scrollHeight || 240;
+    viewportWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || 1024;
+    viewportHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 768;
+
+    if (anchor && anchor.getBoundingClientRect) {
+        anchorRect = anchor.getBoundingClientRect();
+        left = anchorRect.left + (typeof offsetX === 'number' ? offsetX : 0);
+        top = anchorRect.bottom + (typeof offsetY === 'number' ? offsetY : 6);
+    }
+
+    if ((top + layerHeight) > viewportHeight && anchorRect) {
+        top = anchorRect.top - layerHeight - 6;
+    }
+
+    if ((left + layerWidth) > viewportWidth) {
+        left = viewportWidth - layerWidth - 12;
+    }
+    if (left < 8) {
+        left = 8;
+    }
+    if (top < 8) {
+        top = 8;
+    }
+
+    obj.style.top = top + 'px';
+    obj.style.left = left + 'px';
+    obj.style.visibility = 'visible';
+}
+
+function resetContextIcon(iconId) {
+    if (iconId) {
+        setImage(iconId, 'images/icon_blank.gif');
+    }
+}
+
+function hideContextMenu(menuId, iconId, lockId) {
+    var menu = getObject(menuId);
+    var lock = lockId ? getObject(lockId) : null;
+
+    if (menu != null) {
+        menu.setAttribute('data-pinned', 'false');
+        menu.style.display = 'none';
+        menu.style.visibility = 'hidden';
+    }
+
+    if (lock != null) {
+        lock.style.display = 'none';
+        lock.style.visibility = 'hidden';
+    }
+
+    layersShowOrHide('hidden', 'Lock_all');
+    resetContextIcon(iconId);
+}
+
+function hideContextMenuIfUnpinned(menuId, iconId, lockId) {
+    var menu = getObject(menuId);
+
+    if (menu != null && menu.getAttribute('data-pinned') === 'true') {
+        return;
+    }
+
+    hideContextMenu(menuId, iconId, lockId);
+}
+
+function hideAllContextMenus(exceptMenuId) {
+    var allNodes = document.getElementsByTagName('div');
+    var i;
+    var currentId;
+
+    for (i = 0; i < allNodes.length; i++) {
+        if (!allNodes[i].id || allNodes[i].id.indexOf('Event_') !== 0) {
+            continue;
+        }
+
+        currentId = allNodes[i].id;
+        if (exceptMenuId && currentId === exceptMenuId) {
+            continue;
+        }
+
+        hideContextMenu(currentId, null, currentId.replace('Event_', 'Lock_'));
+    }
+}
+
+function previewContextMenu(menuId, anchorSource, iconId) {
+    return false;
+}
+
+function pinContextMenu(menuId, lockId, anchorSource, iconId, e) {
+    var lock = getObject(lockId);
+    var anchor = getContextAnchorElement(anchorSource);
+    var menu = getObject(menuId);
+    var anchorRect;
+
+    if (e && e.preventDefault) {
+        e.preventDefault();
+    }
+    if (e && e.stopPropagation) {
+        e.stopPropagation();
+    }
+    if (e) {
+        e.cancelBubble = true;
+    }
+
+    if (menu != null && menu.getAttribute('data-pinned') === 'true' && isContextMenuVisible(menuId)) {
+        hideContextMenu(menuId, iconId, lockId);
+        return false;
+    }
+
+    hideAllContextMenus(menuId);
+    if (menu != null) {
+        positionContextLayer(menu, anchorSource, 0, 6);
+    }
+
+    if (anchor && anchor.getBoundingClientRect && lock != null) {
+        anchorRect = anchor.getBoundingClientRect();
+        ensureContextLayerOnBody(lock);
+        lock.style.top = anchorRect.top + 'px';
+        lock.style.left = anchorRect.left + 'px';
+        lock.style.width = anchorRect.width + 'px';
+        lock.style.height = anchorRect.height + 'px';
+        lock.style.zIndex = '9998';
+        displayObject(lockId, true);
+    }
+
+    if (menu != null) {
+        menu.setAttribute('data-pinned', 'true');
+        if (iconId) {
+            setImage(iconId, 'images/icon_expand.gif');
+        }
+    }
+    layersShowOrHide('visible', 'Lock_all');
+    return false;
+}
+
+if (document.addEventListener) {
+    document.addEventListener('click', function(event) {
+        var target = event.target || event.srcElement;
+        var current = target;
+        var currentMenuId = null;
+        var anchorTag = null;
+
+        while (current) {
+            if (current.tagName && current.tagName.toLowerCase() === 'a' && !anchorTag) {
+                anchorTag = current;
+            }
+            if (current.id && current.id.indexOf('Event_') === 0) {
+                currentMenuId = current.id;
+                break;
+            }
+            if (current.id && current.id.indexOf('Lock_') === 0) {
+                return;
+            }
+            current = current.parentNode;
+        }
+
+        if (currentMenuId) {
+            if (anchorTag) {
+                setTimeout(function() {
+                    hideContextMenu(currentMenuId, null, currentMenuId.replace('Event_', 'Lock_'));
+                }, 0);
+            }
+            return;
+        }
+
+        hideAllContextMenus();
+    }, false);
 }
 
 function createRequestObject(){
@@ -1989,4 +2220,331 @@ if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', initClinexiaTerminologyOverrides);
 } else {
 	initClinexiaTerminologyOverrides();
+}
+
+var clinexiaOnboardingState = {
+	active: false,
+	steps: [],
+	currentIndex: 0,
+	overlay: null,
+	tooltip: null,
+	highlightedTarget: null,
+	handleDocumentClick: null,
+	handleResize: null,
+	handleKeydown: null
+};
+
+function getClinexiaOnboardingSteps() {
+	return [
+		{
+			id: 'dashboard',
+			selector: '.clinexia-dashboard-hero',
+			title: 'Dashboard',
+			copy: 'Overview del estudio'
+		},
+		{
+			id: 'patients',
+			selector: '#nav_Patients_link',
+			title: 'Patients',
+			copy: 'Gestion de pacientes'
+		},
+		{
+			id: 'visits',
+			selector: '#clinexia-tour-visits-link, .clinexia-visits-shell',
+			title: 'Visits',
+			copy: 'Seguimiento clinico'
+		},
+		{
+			id: 'forms',
+			selector: '.clinexia-form-hero, #nav_SubmitData_link',
+			title: 'Forms',
+			copy: 'Carga de datos'
+		}
+	];
+}
+
+function getClinexiaStorage() {
+	try {
+		return window.localStorage;
+	} catch (error) {
+		return null;
+	}
+}
+
+function isClinexiaOnboardingDismissed() {
+	var storage = getClinexiaStorage();
+	return storage ? storage.getItem('clinexia_onboarding_dismissed') === 'true' : false;
+}
+
+function setClinexiaOnboardingDismissed(value) {
+	var storage = getClinexiaStorage();
+	if (!storage) {
+		return;
+	}
+
+	if (value) {
+		storage.setItem('clinexia_onboarding_dismissed', 'true');
+	} else {
+		storage.removeItem('clinexia_onboarding_dismissed');
+	}
+}
+
+function ensureClinexiaOnboardingChrome() {
+	if (clinexiaOnboardingState.overlay && clinexiaOnboardingState.tooltip) {
+		return;
+	}
+
+	var overlay = document.createElement('div');
+	overlay.className = 'clinexia-tour-overlay';
+	overlay.setAttribute('hidden', 'hidden');
+
+	var tooltip = document.createElement('div');
+	tooltip.className = 'clinexia-tour-tooltip';
+	tooltip.setAttribute('hidden', 'hidden');
+	tooltip.innerHTML = ''
+		+ '<div class="clinexia-tour-tooltip-inner">'
+		+ '  <span class="clinexia-tour-kicker">Clinexia tour</span>'
+		+ '  <strong class="clinexia-tour-title"></strong>'
+		+ '  <p class="clinexia-tour-copy"></p>'
+		+ '  <div class="clinexia-tour-actions">'
+		+ '    <button type="button" class="clinexia-tour-skip">Skip</button>'
+		+ '    <button type="button" class="clinexia-tour-next">Next</button>'
+		+ '  </div>'
+		+ '</div>';
+
+	document.body.appendChild(overlay);
+	document.body.appendChild(tooltip);
+
+	tooltip.querySelector('.clinexia-tour-skip').onclick = function() {
+		stopClinexiaOnboarding(true);
+	};
+	tooltip.querySelector('.clinexia-tour-next').onclick = function() {
+		advanceClinexiaOnboarding();
+	};
+
+	overlay.onclick = function() {
+		stopClinexiaOnboarding(true);
+	};
+
+	clinexiaOnboardingState.overlay = overlay;
+	clinexiaOnboardingState.tooltip = tooltip;
+}
+
+function clearClinexiaOnboardingTarget() {
+	if (clinexiaOnboardingState.highlightedTarget && clinexiaOnboardingState.highlightedTarget.className.indexOf('clinexia-tour-target-active') === -1) {
+		clinexiaOnboardingState.highlightedTarget = null;
+		return;
+	}
+
+	if (clinexiaOnboardingState.highlightedTarget) {
+		clinexiaOnboardingState.highlightedTarget.className = clinexiaOnboardingState.highlightedTarget.className.replace(/\s*clinexia-tour-target-active/g, '');
+		clinexiaOnboardingState.highlightedTarget = null;
+	}
+}
+
+function setClinexiaOnboardingTarget(target) {
+	clearClinexiaOnboardingTarget();
+
+	if (!target) {
+		return;
+	}
+
+	if (target.className && target.className.indexOf('clinexia-tour-target-active') === -1) {
+		target.className += ' clinexia-tour-target-active';
+	} else if (!target.className) {
+		target.className = 'clinexia-tour-target-active';
+	}
+
+	clinexiaOnboardingState.highlightedTarget = target;
+}
+
+function positionClinexiaOnboardingTooltip(target) {
+	if (!target || !clinexiaOnboardingState.tooltip) {
+		return;
+	}
+
+	var rect = target.getBoundingClientRect();
+	var tooltip = clinexiaOnboardingState.tooltip;
+	var tooltipWidth = tooltip.offsetWidth || 320;
+	var tooltipHeight = tooltip.offsetHeight || 180;
+	var top = rect.bottom + 16;
+	var left = rect.left;
+
+	if (left + tooltipWidth > window.innerWidth - 16) {
+		left = window.innerWidth - tooltipWidth - 16;
+	}
+	if (left < 16) {
+		left = 16;
+	}
+	if (top + tooltipHeight > window.innerHeight - 16) {
+		top = rect.top - tooltipHeight - 16;
+	}
+	if (top < 16) {
+		top = 16;
+	}
+
+	tooltip.style.top = top + 'px';
+	tooltip.style.left = left + 'px';
+}
+
+function renderClinexiaOnboardingStep() {
+	if (!clinexiaOnboardingState.active || !clinexiaOnboardingState.steps.length) {
+		return;
+	}
+
+	var step = clinexiaOnboardingState.steps[clinexiaOnboardingState.currentIndex];
+	if (!step || !step.target) {
+		advanceClinexiaOnboarding();
+		return;
+	}
+
+	ensureClinexiaOnboardingChrome();
+	setClinexiaOnboardingTarget(step.target);
+
+	var tooltip = clinexiaOnboardingState.tooltip;
+	tooltip.querySelector('.clinexia-tour-title').innerHTML = step.title;
+	tooltip.querySelector('.clinexia-tour-copy').innerHTML = step.copy;
+	tooltip.querySelector('.clinexia-tour-next').innerHTML = clinexiaOnboardingState.currentIndex === clinexiaOnboardingState.steps.length - 1 ? 'Finish' : 'Next';
+
+	clinexiaOnboardingState.overlay.removeAttribute('hidden');
+	clinexiaOnboardingState.tooltip.removeAttribute('hidden');
+	positionClinexiaOnboardingTooltip(step.target);
+}
+
+function advanceClinexiaOnboarding() {
+	if (!clinexiaOnboardingState.active) {
+		return false;
+	}
+
+	clinexiaOnboardingState.currentIndex += 1;
+	if (clinexiaOnboardingState.currentIndex >= clinexiaOnboardingState.steps.length) {
+		stopClinexiaOnboarding(false);
+		return false;
+	}
+
+	renderClinexiaOnboardingStep();
+	return false;
+}
+
+function stopClinexiaOnboarding(dismissed) {
+	clearClinexiaOnboardingTarget();
+
+	if (dismissed) {
+		setClinexiaOnboardingDismissed(true);
+	}
+
+	clinexiaOnboardingState.active = false;
+	clinexiaOnboardingState.steps = [];
+	clinexiaOnboardingState.currentIndex = 0;
+
+	if (clinexiaOnboardingState.overlay) {
+		clinexiaOnboardingState.overlay.setAttribute('hidden', 'hidden');
+	}
+	if (clinexiaOnboardingState.tooltip) {
+		clinexiaOnboardingState.tooltip.setAttribute('hidden', 'hidden');
+		clinexiaOnboardingState.tooltip.style.top = '';
+		clinexiaOnboardingState.tooltip.style.left = '';
+	}
+
+	if (clinexiaOnboardingState.handleDocumentClick) {
+		document.removeEventListener('click', clinexiaOnboardingState.handleDocumentClick, true);
+		clinexiaOnboardingState.handleDocumentClick = null;
+	}
+	if (clinexiaOnboardingState.handleResize) {
+		window.removeEventListener('resize', clinexiaOnboardingState.handleResize);
+		window.removeEventListener('scroll', clinexiaOnboardingState.handleResize, true);
+		clinexiaOnboardingState.handleResize = null;
+	}
+	if (clinexiaOnboardingState.handleKeydown) {
+		document.removeEventListener('keydown', clinexiaOnboardingState.handleKeydown, true);
+		clinexiaOnboardingState.handleKeydown = null;
+	}
+}
+
+function startClinexiaOnboarding(forceStart) {
+	var allSteps = getClinexiaOnboardingSteps();
+	var resolvedSteps = [];
+	var i;
+
+	if (!forceStart && isClinexiaOnboardingDismissed()) {
+		return false;
+	}
+
+	for (i = 0; i < allSteps.length; i++) {
+		var target = document.querySelector(allSteps[i].selector);
+		if (target) {
+			var step = {
+				id: allSteps[i].id,
+				title: allSteps[i].title,
+				copy: allSteps[i].copy,
+				target: target
+			};
+			resolvedSteps.push(step);
+		}
+	}
+
+	if (!resolvedSteps.length) {
+		return false;
+	}
+
+	setClinexiaOnboardingDismissed(false);
+	stopClinexiaOnboarding(false);
+
+	clinexiaOnboardingState.active = true;
+	clinexiaOnboardingState.steps = resolvedSteps;
+	clinexiaOnboardingState.currentIndex = 0;
+
+	clinexiaOnboardingState.handleDocumentClick = function(event) {
+		if (!clinexiaOnboardingState.active || !clinexiaOnboardingState.tooltip) {
+			return;
+		}
+
+		var target = event.target;
+		if (clinexiaOnboardingState.tooltip.contains(target)) {
+			return;
+		}
+		stopClinexiaOnboarding(true);
+	};
+
+	clinexiaOnboardingState.handleResize = function() {
+		if (!clinexiaOnboardingState.active) {
+			return;
+		}
+		renderClinexiaOnboardingStep();
+	};
+
+	clinexiaOnboardingState.handleKeydown = function(event) {
+		var key = event.key || event.keyCode;
+		if (key === 'Escape' || key === 'Esc' || key === 27) {
+			stopClinexiaOnboarding(true);
+			return;
+		}
+		if (key === 'Enter' || key === 13) {
+			advanceClinexiaOnboarding();
+		}
+	};
+
+	document.addEventListener('click', clinexiaOnboardingState.handleDocumentClick, true);
+	window.addEventListener('resize', clinexiaOnboardingState.handleResize);
+	window.addEventListener('scroll', clinexiaOnboardingState.handleResize, true);
+	document.addEventListener('keydown', clinexiaOnboardingState.handleKeydown, true);
+
+	renderClinexiaOnboardingStep();
+	return false;
+}
+
+function initClinexiaOnboarding() {
+	if (!document.body || !document.querySelector('.clinexia-dashboard-hero')) {
+		return;
+	}
+
+	window.setTimeout(function() {
+		startClinexiaOnboarding(false);
+	}, 250);
+}
+
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', initClinexiaOnboarding);
+} else {
+	initClinexiaOnboarding();
 }

@@ -80,7 +80,7 @@ onload="TabsForwardByNum(<c:out value="${tabId}"/>);<jsp:include page="../includ
 
 <!-- Logo -->
 
-	<div class="logo"><img src="images/Logo.gif"></div>
+	<a class="logo clinexia-brand" href="MainMenu" title="Clinexia Dashboard" aria-label="Clinexia Dashboard"><img src="images/Logo.gif"></a>
 
 <!-- Main Navigation -->
 

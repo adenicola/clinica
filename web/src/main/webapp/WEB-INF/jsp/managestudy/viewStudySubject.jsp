@@ -90,15 +90,75 @@
 <jsp:useBean scope="request" id="from" class="java.lang.String"/>
 
 <c:set var="visitCount" value="${fn:length(table.rows)}" />
+<c:set var="associatedStudyName" value="${subjectStudy.name}" />
+<c:if test="${empty associatedStudyName}">
+    <c:set var="associatedStudyName" value="${parentStudy.name}" />
+</c:if>
 <c:set var="patientStatusToken" value="${fn:toLowerCase(studySub.status.name)}" />
-
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr><td><h1><div class="title_manage">View Patient <c:out value="${studySub.label}"/></div></h1></td></tr>
-</table>
+<c:set var="patientStatusLabel" value="Screened" />
+<c:if test="${fn:contains(patientStatusToken, 'available') || fn:contains(patientStatusToken, 'active')}">
+    <c:set var="patientStatusLabel" value="Active" />
+</c:if>
+<c:if test="${fn:contains(patientStatusToken, 'completed') || fn:contains(patientStatusToken, 'signed')}">
+    <c:set var="patientStatusLabel" value="Completed" />
+</c:if>
+<c:set var="incompleteFormsCount" value="0" />
+<c:set var="visitsWithPendingCount" value="0" />
+<c:set var="nextPatientActionUrl" value="" />
+<c:set var="nextPatientActionLabel" value="Review patient summary" />
+<c:forEach var="summaryRow" items="${table.rows}">
+    <c:set var="visitPendingForms" value="${fn:length(summaryRow.bean.uncompletedCRFs)}" />
+    <c:forEach var="summaryUncompleted" items="${summaryRow.bean.uncompletedCRFs}">
+        <c:if test="${empty nextPatientActionUrl}">
+            <c:set var="nextPatientActionUrl" value="ViewSectionDataEntry?eventDefinitionCRFId=${summaryUncompleted.edc.id}&crfVersionId=${summaryUncompleted.edc.defaultVersionId}&tabId=1&studySubjectId=${studySub.id}&ecId=${summaryUncompleted.eventCRF.id}&exitTo=ViewStudySubject?id=${studySub.id}" />
+            <c:set var="nextPatientActionLabel" value="Open next visit" />
+        </c:if>
+    </c:forEach>
+    <c:forEach var="summaryDec" items="${summaryRow.bean.displayEventCRFs}">
+        <c:if test="${empty nextPatientActionUrl && !(summaryDec.stage.locked || summaryDec.eventCRF.status.locked || summaryDec.locked || summaryDec.stage.initialDE_Complete || summaryDec.stage.doubleDE_Complete)}">
+            <c:set var="nextPatientActionUrl" value="ViewSectionDataEntry?ecId=${summaryDec.eventCRF.id}&eventDefinitionCRFId=${summaryDec.eventDefinitionCRF.id}&tabId=1&studySubjectId=${studySub.id}&exitTo=ViewStudySubject?id=${studySub.id}" />
+            <c:set var="nextPatientActionLabel" value="Open next visit" />
+        </c:if>
+        <c:if test="${!(summaryDec.stage.locked || summaryDec.eventCRF.status.locked || summaryDec.locked || summaryDec.stage.initialDE_Complete || summaryDec.stage.doubleDE_Complete)}">
+            <c:set var="visitPendingForms" value="${visitPendingForms + 1}" />
+        </c:if>
+    </c:forEach>
+    <c:set var="incompleteFormsCount" value="${incompleteFormsCount + visitPendingForms}" />
+    <c:if test="${visitPendingForms > 0}">
+        <c:set var="visitsWithPendingCount" value="${visitsWithPendingCount + 1}" />
+    </c:if>
+</c:forEach>
+<c:set var="patientAlertToneClass" value="is-success" />
+<c:if test="${incompleteFormsCount > 0}">
+    <c:set var="patientAlertToneClass" value="is-warning" />
+</c:if>
+<c:set var="canConfigureVisitForms" value="${userRole.coordinator || userRole.director || userBean.sysAdmin || userBean.techAdmin}" />
+<c:set var="visitConfigUrl" value="" />
+<c:if test="${userRole.coordinator || userRole.director}">
+    <c:choose>
+        <c:when test="${!(study.parentStudyId > 0 && (userRole.coordinator || userRole.director))}">
+            <c:set var="visitConfigUrl" value="pages/studymodule" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="visitConfigUrl" value="ViewStudy?id=${study.id}&viewFull=yes" />
+        </c:otherwise>
+    </c:choose>
+</c:if>
+<c:if test="${empty visitConfigUrl && (userBean.sysAdmin || userBean.techAdmin)}">
+    <c:set var="visitConfigUrl" value="ListCRF?module=admin" />
+</c:if>
+<c:if test="${visitCount == 0}">
+    <c:set var="nextPatientActionUrl" value="CreateNewStudyEvent?studySubjectId=${studySub.id}&autostart=baseline" />
+    <c:set var="nextPatientActionLabel" value="Start first visit" />
+</c:if>
+<c:if test="${empty nextPatientActionUrl && canConfigureVisitForms && not empty visitConfigUrl}">
+    <c:set var="nextPatientActionUrl" value="${visitConfigUrl}" />
+    <c:set var="nextPatientActionLabel" value="Assign forms to visits" />
+</c:if>
 
 <div class="clinexia-patient-shell">
     <section class="clinexia-patient-hero">
-        <div>
+        <div class="clinexia-patient-hero-copy">
             <span class="clinexia-section-kicker">Patient Overview</span>
             <h1 class="clinexia-patient-title"><c:out value="${studySub.label}"/></h1>
             <div class="clinexia-patient-meta">
@@ -108,16 +168,64 @@
                         <c:when test="${fn:contains(patientStatusToken, 'completed') || fn:contains(patientStatusToken, 'signed')}">clinexia-status-badge-completed</c:when>
                         <c:otherwise>clinexia-status-badge-screened</c:otherwise>
                     </c:choose>
-                "><c:out value="${studySub.status.name}"/></span>
-                <span class="clinexia-patient-site"><c:out value="${subjectStudy.name}"/></span>
+                "><c:out value="${patientStatusLabel}"/></span>
+                <span class="clinexia-patient-site">Study <strong><c:out value="${associatedStudyName}"/></strong></span>
+            </div>
+            <div class="clinexia-patient-header-facts">
+                <span><strong>Status</strong> <c:out value="${patientStatusLabel}"/></span>
+                <span><strong>Study</strong> <c:out value="${associatedStudyName}"/></span>
+                <span><strong>Visits</strong> <c:out value="${visitCount}" /></span>
             </div>
         </div>
         <div class="clinexia-patient-hero-actions">
             <c:if test="${study.status.available && !userRole.monitor}">
                 <a class="clinexia-table-action" href="UpdateStudySubject?id=<c:out value='${studySub.id}'/>&amp;action=show">Edit Patient</a>
             </c:if>
-            <a class="clinexia-table-action" href="javascript:openDocWindow('ViewStudySubjectAuditLog?id=<c:out value="${studySub.id}"/>')">History</a>
+            <c:if test="${not empty nextPatientActionUrl}">
+                <a class="clinexia-table-action clinexia-visit-action clinexia-hero-primary-action" href="<c:out value='${nextPatientActionUrl}'/>"><c:out value="${nextPatientActionLabel}"/></a>
+            </c:if>
         </div>
+    </section>
+
+    <section class="clinexia-feedback-strip">
+        <article class="clinexia-feedback-tile is-status">
+            <span class="clinexia-feedback-kicker">Patient status</span>
+            <strong><c:out value="${patientStatusLabel}"/></strong>
+            <span>Current lifecycle stage for this patient record.</span>
+        </article>
+        <article class="clinexia-feedback-tile ${patientAlertToneClass}">
+            <span class="clinexia-feedback-kicker">Alerts</span>
+            <strong>
+                <c:choose>
+                    <c:when test="${incompleteFormsCount > 0}"><c:out value="${incompleteFormsCount}"/> forms need attention</c:when>
+                    <c:otherwise>All forms are up to date</c:otherwise>
+                </c:choose>
+            </strong>
+            <span>
+                <c:choose>
+                    <c:when test="${visitsWithPendingCount > 0}">Across <c:out value="${visitsWithPendingCount}"/> visits in the current timeline.</c:when>
+                    <c:otherwise>No open tasks remain in this patient flow.</c:otherwise>
+                </c:choose>
+            </span>
+        </article>
+        <article class="clinexia-feedback-tile is-info">
+            <span class="clinexia-feedback-kicker">Next step</span>
+            <strong>
+                <c:choose>
+                    <c:when test="${visitCount == 0}">Start the first visit</c:when>
+                    <c:when test="${incompleteFormsCount > 0}">Continue the next active visit</c:when>
+                    <c:otherwise>Review the completed timeline</c:otherwise>
+                </c:choose>
+            </strong>
+            <span>
+                <c:choose>
+                    <c:when test="${not empty nextPatientActionUrl}">
+                        <a class="clinexia-feedback-link" href="<c:out value='${nextPatientActionUrl}'/>"><c:out value="${nextPatientActionLabel}"/></a>
+                    </c:when>
+                    <c:otherwise>Every visit card includes a direct action so the next step is always obvious.</c:otherwise>
+                </c:choose>
+            </span>
+        </article>
     </section>
 
     <div class="clinexia-patient-layout">
@@ -141,17 +249,28 @@
                             <c:forEach var="row" items="${table.rows}">
                                 <c:set var="visitStatusToken" value="${fn:toLowerCase(row.bean.studyEvent.subjectEventStatus.name)}" />
                                 <c:set var="visitActionUrl" value="" />
-                                <c:set var="visitStateLabel" value="Pending" />
+                                <c:set var="visitFallbackUrl" value="" />
+                                <c:set var="visitCardUrl" value="" />
+                                <c:set var="visitStateLabel" value="Scheduled" />
                                 <c:set var="visitStateClass" value="clinexia-status-badge-screened" />
+                                <c:set var="visitActionHint" value="Ready to start this visit" />
                                 <c:set var="totalFormsInVisit" value="${fn:length(row.bean.uncompletedCRFs) + fn:length(row.bean.displayEventCRFs)}" />
                                 <c:set var="completedFormsInVisit" value="0" />
+                                <c:set var="pendingFormsInVisit" value="${fn:length(row.bean.uncompletedCRFs)}" />
                                 <c:if test="${fn:contains(visitStatusToken, 'completed') || fn:contains(visitStatusToken, 'signed') || fn:contains(visitStatusToken, 'stopped')}">
                                     <c:set var="visitStateLabel" value="Completed" />
                                     <c:set var="visitStateClass" value="clinexia-status-badge-completed" />
+                                    <c:set var="visitActionHint" value="Review completed forms and visit history" />
                                 </c:if>
-                                <c:if test="${fn:contains(visitStatusToken, 'data entry started') || fn:contains(visitStatusToken, 'scheduled') || fn:contains(visitStatusToken, 'available')}">
-                                    <c:set var="visitStateLabel" value="Pending" />
+                                <c:if test="${fn:contains(visitStatusToken, 'data entry started') || fn:contains(visitStatusToken, 'started') || fn:contains(visitStatusToken, 'in progress')}">
+                                    <c:set var="visitStateLabel" value="In progress" />
                                     <c:set var="visitStateClass" value="clinexia-status-badge-active" />
+                                    <c:set var="visitActionHint" value="Continue work on this visit" />
+                                </c:if>
+                                <c:if test="${fn:contains(visitStatusToken, 'scheduled') || fn:contains(visitStatusToken, 'available')}">
+                                    <c:set var="visitStateLabel" value="Scheduled" />
+                                    <c:set var="visitStateClass" value="clinexia-status-badge-screened" />
+                                    <c:set var="visitActionHint" value="Open this visit and begin data capture" />
                                 </c:if>
                                 <c:forEach var="dedc" items="${row.bean.uncompletedCRFs}">
                                     <c:if test="${empty visitActionUrl}">
@@ -159,13 +278,28 @@
                                     </c:if>
                                 </c:forEach>
                                 <c:forEach var="dec" items="${row.bean.displayEventCRFs}">
-                                    <c:if test="${empty visitActionUrl}">
+                                    <c:if test="${empty visitFallbackUrl}">
+                                        <c:set var="visitFallbackUrl" value="ViewSectionDataEntry?ecId=${dec.eventCRF.id}&eventDefinitionCRFId=${dec.eventDefinitionCRF.id}&tabId=1&studySubjectId=${studySub.id}&exitTo=ViewStudySubject?id=${studySub.id}" />
+                                    </c:if>
+                                    <c:if test="${empty visitActionUrl && !(dec.stage.locked || dec.eventCRF.status.locked || dec.locked || dec.stage.initialDE_Complete || dec.stage.doubleDE_Complete)}">
                                         <c:set var="visitActionUrl" value="ViewSectionDataEntry?ecId=${dec.eventCRF.id}&eventDefinitionCRFId=${dec.eventDefinitionCRF.id}&tabId=1&studySubjectId=${studySub.id}&exitTo=ViewStudySubject?id=${studySub.id}" />
                                     </c:if>
                                     <c:if test="${dec.stage.locked || dec.eventCRF.status.locked || dec.locked || dec.stage.initialDE_Complete || dec.stage.doubleDE_Complete}">
                                         <c:set var="completedFormsInVisit" value="${completedFormsInVisit + 1}" />
                                     </c:if>
+                                    <c:if test="${!(dec.stage.locked || dec.eventCRF.status.locked || dec.locked || dec.stage.initialDE_Complete || dec.stage.doubleDE_Complete)}">
+                                        <c:set var="pendingFormsInVisit" value="${pendingFormsInVisit + 1}" />
+                                    </c:if>
                                 </c:forEach>
+                                <c:if test="${empty visitActionUrl && not empty visitFallbackUrl}">
+                                    <c:set var="visitActionUrl" value="${visitFallbackUrl}" />
+                                </c:if>
+                                <c:if test="${not empty visitActionUrl}">
+                                    <c:set var="visitCardUrl" value="${visitActionUrl}" />
+                                </c:if>
+                                <c:if test="${empty visitCardUrl && canConfigureVisitForms && not empty visitConfigUrl}">
+                                    <c:set var="visitCardUrl" value="${visitConfigUrl}" />
+                                </c:if>
                                 <c:set var="visitCompletionPercent" value="0" />
                                 <c:if test="${totalFormsInVisit > 0}">
                                     <fmt:parseNumber var="visitCompletionPercent" integerOnly="true" value="${(completedFormsInVisit * 100) / totalFormsInVisit}" />
@@ -194,11 +328,15 @@
                                                         <span><c:out value="${row.bean.studyEvent.location}"/></span>
                                                     </c:if>
                                                 </div>
+                                                <div class="clinexia-visit-action-copy"><c:out value="${visitActionHint}"/></div>
                                             </div>
                                             <div class="clinexia-visit-header-actions">
                                                 <span class="clinexia-status-badge ${visitStateClass}"><c:out value="${visitStateLabel}"/></span>
-                                                <c:if test="${not empty visitActionUrl}">
-                                                    <a class="clinexia-table-action clinexia-visit-action" href="<c:out value='${visitActionUrl}'/>">Open Form</a>
+                                                <c:if test="${pendingFormsInVisit > 0}">
+                                                    <span class="clinexia-inline-alert"><c:out value="${pendingFormsInVisit}"/> forms pending</span>
+                                                </c:if>
+                                                <c:if test="${not empty visitCardUrl}">
+                                                    <a class="clinexia-table-action clinexia-visit-action" href="<c:out value='${visitCardUrl}'/>">Open Visit</a>
                                                 </c:if>
                                             </div>
                                         </div>
@@ -263,10 +401,18 @@
 
                                             <c:if test="${empty row.bean.uncompletedCRFs && empty row.bean.displayEventCRFs}">
                                                 <div class="clinexia-form-row clinexia-form-row-empty">
-                                                    <div>
+                                                    <div class="clinexia-form-row-copy">
                                                         <span class="clinexia-form-name">No forms assigned</span>
-                                                        <span class="clinexia-form-state">This visit is available but has no forms to open.</span>
+                                                        <span class="clinexia-form-state">
+                                                            <c:choose>
+                                                                <c:when test="${canConfigureVisitForms && not empty visitConfigUrl}">This visit is ready, but it still needs forms assigned in configuration.</c:when>
+                                                                <c:otherwise>This visit is available but has no forms to open yet.</c:otherwise>
+                                                            </c:choose>
+                                                        </span>
                                                     </div>
+                                                    <c:if test="${canConfigureVisitForms && not empty visitConfigUrl}">
+                                                        <a class="clinexia-table-action" href="<c:out value='${visitConfigUrl}'/>">Open Configuration</a>
+                                                    </c:if>
                                                 </div>
                                             </c:if>
                                         </div>
@@ -277,16 +423,15 @@
                     </c:when>
                     <c:otherwise>
                         <div class="clinexia-patient-empty">
-                            No visits have been created for this patient yet.
+                            <div class="clinexia-patient-empty-title">No visits yet</div>
+                            <p class="clinexia-patient-empty-copy">Start a visit to open the patient workflow and begin data collection right away.</p>
+                            <div class="clinexia-empty-actions">
+                                <a class="clinexia-table-action clinexia-primary-action" href="CreateNewStudyEvent?studySubjectId=<c:out value='${studySub.id}'/>&amp;autostart=baseline">Start Visit</a>
+                            </div>
                         </div>
                     </c:otherwise>
                 </c:choose>
             </section>
-
-            <details class="clinexia-legacy-panel">
-                <summary>Detailed visit matrix</summary>
-                <p class="clinexia-form-note">Open the legacy matrix below if you need the original operational view with all legacy actions.</p>
-            </details>
         </div>
 
         <aside class="clinexia-patient-sidebar">
@@ -294,7 +439,7 @@
                 <div class="clinexia-patient-card-header">
                     <div>
                         <span class="clinexia-section-kicker">Patient Details</span>
-                        <h2>At a glance</h2>
+                        <h2>Status snapshot</h2>
                     </div>
                 </div>
                 <dl class="clinexia-patient-facts">
@@ -305,6 +450,10 @@
                     <div>
                         <dt>Status</dt>
                         <dd><c:out value="${studySub.status.name}"/></dd>
+                    </div>
+                    <div>
+                        <dt>Study</dt>
+                        <dd><c:out value="${associatedStudyName}"/></dd>
                     </div>
                     <div>
                         <dt>Site</dt>
@@ -339,6 +488,7 @@
     <a href="javascript:openDocWindow('ViewStudySubjectAuditLog?id=<c:out value="${studySub.id}"/>')"><fmt:message key="audit_logs" bundle="${resword}"/></a>
 </p> --%>
 
+<div class="clinexia-legacy-detail-sections" hidden>
 <c:choose>
     <c:when test="${isAdminServlet == 'admin' && userBean.sysAdmin && module=='admin'}">
         <div class="table_title_Admin">
@@ -1095,6 +1245,7 @@
 </div></div></div></div></div></div></div></div>
 </div>
 
+</div>
 </div>
 
 <jsp:include page="studySubject/casebookGenerationForm.jsp"/>

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <fmt:setBundle basename="org.akaza.openclinica.i18n.words" var="resword"/>
 <fmt:setBundle basename="org.akaza.openclinica.i18n.format" var="resformat"/>
@@ -78,74 +79,66 @@
 <c:forEach var="event" items="${currRow.bean.studyEvents}">
     <c:set var="currEvent" scope="request" value="${event}" />
     <td class="table_cell">
-        <table border="0" cellpadding="0" cellspacing="0">
-            <tr valign="top">
-                <td>
-                    <c:import url="../submit/eventLayer.jsp">
-                        <c:param name="colCount" value="${count}"/>
-                        <c:param name="rowCount" value="${eblRowCount}"/>
-                        <c:param name="eventId" value="${event.id}"/>
-                        <c:param name="eventStatus" value="${event.subjectEventStatus.name}"/>
-                        <c:param name="eventName" value="${event.studyEventDefinition.name}"/>
-                        <c:param name="subjectId" value="${currRow.bean.studySubject.id}"/>
-                        <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-                        <c:param name="eventSysStatus" value="${currRow.bean.studySubject.status.name}"/>
-                        <c:param name="eventDefId" value="${event.studyEventDefinition.id}"/>
-                    </c:import>
+        <div class="clinexia-schedule-cell">
+            <div class="clinexia-schedule-visit">
+                <div class="clinexia-schedule-visit-header">
+                    <span class="clinexia-schedule-status
+                        <c:choose>
+                            <c:when test="${event.subjectEventStatus.id == 4 || event.subjectEventStatus.id == 8}">clinexia-schedule-status-completed</c:when>
+                            <c:when test="${event.subjectEventStatus.id == 2}">clinexia-schedule-status-empty</c:when>
+                            <c:when test="${event.subjectEventStatus.id == 5 || event.subjectEventStatus.id == 6 || event.subjectEventStatus.id == 7}">clinexia-schedule-status-warning</c:when>
+                            <c:otherwise>clinexia-schedule-status-active</c:otherwise>
+                        </c:choose>
+                    "><c:out value="${event.subjectEventStatus.name}"/></span>
+                    <c:if test="${event.repeatingNum > 1}">
+                        <span class="clinexia-schedule-occurrence">Visit 1</span>
+                    </c:if>
+                </div>
+                <div class="clinexia-schedule-actions">
                     <c:choose>
-                        <c:when test="${event.subjectEventStatus.id==1}">
-
-                            <img src="images/icon_Scheduled.gif"  border="0" style="position: relative; left: 7px;">
+                        <c:when test="${event.id > 0}">
+                            <a class="clinexia-inline-action" href="EnterDataForStudyEvent?eventId=<c:out value='${event.id}'/>">Open Visit</a>
+                            <a class="clinexia-inline-action clinexia-inline-action-primary" href="EnterDataForStudyEvent?eventId=<c:out value='${event.id}'/>">Open Form</a>
+                            <c:if test="${(userRole.director || userBean.sysAdmin) && study.status.available && event.editable}">
+                                <a class="clinexia-inline-action" href="UpdateStudyEvent?event_id=<c:out value='${event.id}'/>&ss_id=<c:out value='${currRow.bean.studySubject.id}'/>">Edit Visit</a>
+                            </c:if>
+                            <c:if test="${event.repeatingNum > 1 && event.subjectEventStatus.id != 2 && currRow.bean.studySubject.status.name != 'removed' && currRow.bean.studySubject.status.name != 'auto-removed' && study.status.available}">
+                                <a class="clinexia-inline-action" href="CreateNewStudyEvent?studySubjectId=<c:out value='${currRow.bean.studySubject.id}'/>&studyEventDefinition=<c:out value='${event.studyEventDefinition.id}'/>">Add Occurrence</a>
+                            </c:if>
                         </c:when>
-                        <c:when test="${event.subjectEventStatus.id==2}">
-
-                            <img src="images/icon_NotStarted.gif"  border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-                        <c:when test="${event.subjectEventStatus.id==3}">
-
-                            <img src="images/icon_InitialDE.gif"  border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-                        <c:when test="${event.subjectEventStatus.id==4}">
-
-                            <img src="images/icon_DEcomplete.gif" border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-                        <c:when test="${event.subjectEventStatus.id==5}">
-
-                            <img src="images/icon_Stopped.gif" border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-                        <c:when test="${event.subjectEventStatus.id==6}">
-
-                            <img src="images/icon_Skipped.gif" border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-                        <c:when test="${event.subjectEventStatus.id==7}">
-
-                            <img src="images/icon_Locked.gif" border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-
-                        <c:when test="${event.subjectEventStatus.id==8}">
-
-                            <img src="images/icon_Signed.gif" border="0" style="position: relative; left: 7px;">
-
-                        </c:when>
-
+                        <c:otherwise>
+                            <span class="clinexia-inline-empty">No form assigned</span>
+                            <c:if test="${!userRole.monitor && study.status.available}">
+                                <a class="clinexia-inline-action clinexia-inline-action-primary" href="CreateNewStudyEvent?studySubjectId=<c:out value='${currRow.bean.studySubject.id}'/>&studyEventDefinition=<c:out value='${event.studyEventDefinition.id}'/>">Schedule Visit</a>
+                            </c:if>
+                        </c:otherwise>
                     </c:choose>
-                    </a><img name="ExpandIcon_<c:out value="${currRow.bean.studySubject.label}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>" src="images/icon_blank.gif" width="15" height="15" style="position: relative; left: 8px;">
+                </div>
+            </div>
 
-                </td>
-
-                <c:if test="${event.repeatingNum>1}">
-                    <td vlign="top">
-                        &nbsp;(<c:out value="${event.repeatingNum}"/>)
-                    </td>
-                </c:if>
-            </tr>
-        </table>&nbsp;
+            <c:forEach var="repeatEvent" items="${event.repeatEvents}" varStatus="repeatStatus">
+                <div class="clinexia-schedule-visit clinexia-schedule-visit-repeat">
+                    <div class="clinexia-schedule-visit-header">
+                        <span class="clinexia-schedule-status
+                            <c:choose>
+                                <c:when test="${repeatEvent.subjectEventStatus.id == 4 || repeatEvent.subjectEventStatus.id == 8}">clinexia-schedule-status-completed</c:when>
+                                <c:when test="${repeatEvent.subjectEventStatus.id == 2}">clinexia-schedule-status-empty</c:when>
+                                <c:when test="${repeatEvent.subjectEventStatus.id == 5 || repeatEvent.subjectEventStatus.id == 6 || repeatEvent.subjectEventStatus.id == 7}">clinexia-schedule-status-warning</c:when>
+                                <c:otherwise>clinexia-schedule-status-active</c:otherwise>
+                            </c:choose>
+                        "><c:out value="${repeatEvent.subjectEventStatus.name}"/></span>
+                        <span class="clinexia-schedule-occurrence">Visit <c:out value="${repeatStatus.index + 2}"/></span>
+                    </div>
+                    <div class="clinexia-schedule-actions">
+                        <a class="clinexia-inline-action" href="EnterDataForStudyEvent?eventId=<c:out value='${repeatEvent.id}'/>">Open Visit</a>
+                        <a class="clinexia-inline-action clinexia-inline-action-primary" href="EnterDataForStudyEvent?eventId=<c:out value='${repeatEvent.id}'/>">Open Form</a>
+                        <c:if test="${(userRole.director || userBean.sysAdmin) && study.status.available && repeatEvent.editable}">
+                            <a class="clinexia-inline-action" href="UpdateStudyEvent?event_id=<c:out value='${repeatEvent.id}'/>&ss_id=<c:out value='${currRow.bean.studySubject.id}'/>">Edit Visit</a>
+                        </c:if>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
     </td>
 
     <c:set var="count" value="${count+1}"/>

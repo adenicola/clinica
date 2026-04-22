@@ -1,0 +1,1085 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- start of menu.jsp -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+    <title>LibreClinica</title>
+
+    <link rel="icon" type="image/png" href="/LibreClinica/images/clinexia-favicon.png">
+    <link rel="stylesheet" href="/LibreClinica/includes/styles.css" type="text/css"/>
+    <link rel="stylesheet" href="/LibreClinica/includes/modern-theme.css" type="text/css"/>
+
+    <script type="text/JavaScript" src="/LibreClinica/includes/global_functions_javascript.js"></script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/Tabs.js"></script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/CalendarPopup.js"></script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/repetition-model/repetition-model.js"></script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/prototype.js"></script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/jmesa/jquery.min.js"></script><script language="JavaScript">jQuery.noConflict();</script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/scriptaculous.js?load=effects"></script>
+    <script type="text/JavaScript" src="/LibreClinica/includes/effects.js"></script>
+
+    <link rel="stylesheet" type="text/css" media="all" href="/LibreClinica/includes/new_cal/skins/aqua/theme.css" title="Aqua" />
+    <script type="text/javascript" src="/LibreClinica/includes/new_cal/calendar.js"></script>
+    <script type="text/javascript" src="/LibreClinica/includes/new_cal/lang/calendar-en.js"></script>
+    <script type="text/javascript" src="/LibreClinica/includes/new_cal/lang/calendar-en.js"></script>
+    <script type="text/javascript" src="/LibreClinica/includes/new_cal/calendar-setup.js"></script>
+    <!-- End -->
+
+    <script language="JavaScript">
+        function pageWidth() {return window.innerWidth != null? window.innerWidth: document.documentElement && document.documentElement.clientWidth ? document.documentElement.clientWidth:document.body != null? document.body.clientWidth:null;}
+        function pageHeight() {return window.innerHeight != null? window.innerHeight: document.documentElement && document.documentElement.clientHeight ? document.documentElement.clientHeight:document.body != null? document.body.clientHeight:null;}
+        function posLeft() {return typeof window.pageXOffset != 'undefined' ? window.pageXOffset:document.documentElement && document.documentElement.scrollLeft? document.documentElement.scrollLeft:document.body.scrollLeft? document.body.scrollLeft:0;}
+        function posTop() {return typeof window.pageYOffset != 'undefined' ? window.pageYOffset:document.documentElement && document.documentElement.scrollTop? document.documentElement.scrollTop: document.body.scrollTop?document.body.scrollTop:0;}
+        function $(x){return document.getElementById(x);}
+        function scrollFix(){var obol=$('ol');obol.style.top=posTop()+'px';obol.style.left=posLeft()+'px'}
+        function sizeFix(){var obol=$('ol');obol.style.height=pageHeight()+'px';obol.style.width=pageWidth()+'px';}
+        function kp(e){ky=e?e.which:event.keyCode;if(ky==88||ky==120)hm();return false}
+        function inf(h){tag=document.getElementsByTagName('select');for(i=tag.length-1;i>=0;i--)tag[i].style.visibility=h;tag=document.getElementsByTagName('iframe');for(i=tag.length-1;i>=0;i--)tag[i].style.visibility=h;tag=document.getElementsByTagName('object');for(i=tag.length-1;i>=0;i--)tag[i].style.visibility=h;}
+        function sm(obl, wd, ht){var h='hidden';var b='block';var p='px';var obol=$('ol'); var obbxd = $('mbd');obbxd.innerHTML = $(obl).innerHTML;obol.style.height=pageHeight()+p;obol.style.width=pageWidth()+p;obol.style.top=posTop()+p;obol.style.left=posLeft()+p;obol.style.display=b;var tp=posTop()+((pageHeight()-ht)/2)-12;var lt=posLeft()+((pageWidth()-wd)/2)-12;var obbx=$('mbox');obbx.style.top=(tp<0?0:tp)+p;obbx.style.left=(lt<0?0:lt)+p;obbx.style.width=wd+p;obbx.style.height=ht+p;inf(h);obbx.style.display=b;return false;}
+        function hm(){var v='visible';var n='none';$('ol').style.display=n;$('mbox').style.display=n;inf(v);document.onkeypress=''}
+
+        function initmb(){var ab='absolute';var n='none';var obody=document.getElementsByTagName('body')[0];var frag=document.createDocumentFragment();var obol=document.createElement('div');obol.setAttribute('id','ol');obol.style.display=n;obol.style.position=ab;obol.style.top=0;obol.style.left=0;obol.style.zIndex=998;obol.style.width='100%';frag.appendChild(obol);var obbx=document.createElement('div');obbx.setAttribute('id','mbox');obbx.style.display=n;obbx.style.position=ab;obbx.style.zIndex=999;var obl=document.createElement('span');obbx.appendChild(obl);var obbxd=document.createElement('div');obbxd.setAttribute('id','mbd');obl.appendChild(obbxd);frag.insertBefore(obbx,obol.nextSibling);obody.insertBefore(frag,obody.firstChild);
+            window.onscroll = scrollFix; window.onresize = sizeFix;
+        }
+    </script>
+
+    <script language="JavaScript">var StatusBoxValue=1;</script>
+</head>
+
+<body 
+    
+    
+
+
+
+
+
+	
+	
+	
+
+
+>
+
+<table class="background">
+    <tr>
+        <td>
+<!-- Header Table -->
+<table class="header">
+            <tr>
+                <td>
+<!-- Logo -->
+    <div class="logo"><img src="/LibreClinica/images/Logo.gif"></div>
+<!-- Main Navigation -->
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script language="JavaScript">
+        function confirmCancel(pageName){
+            var confirm1 = confirm('Are you sure you want to Cancel? Select the OK button if you would like to Cancel the transaction. Select the Cancel button if you would like to remain on the page.');
+            if(confirm1){
+                window.location = pageName;
+            }
+        }
+        function confirmExit(pageName){
+            var confirm1 = confirm('Are you sure you want to Exit? Select the OK button if you would like to Exit the transaction. Select the Cancel button if you would like to remain on the page.');
+            if(confirm1){
+                window.location = pageName;
+            }
+        }
+        function goBack(){
+            var confirm1 = confirm('Are you sure you want to Cancel? Select the OK button if you would like to Cancel the transaction. Select the Cancel button if you would like to remain on the page.');
+            if(confirm1){
+                return history.go(-1);
+            }
+        }
+        function lockedCRFAlert(userName){
+            alert('This CRF is currently unavailable for data entry.'+'\n'
+                    +'          '+userName+' '+'is currently entering data.'+'\n'
+                    +'Once they leave the CRF, you will be allowed to enter data.');
+            return false;
+        }
+        function confirmCancelAction( pageName, contextPath){
+            var confirm1 = confirm('Are you sure you want to Cancel? Select the OK button if you would like to Cancel the transaction. Select the Cancel button if you would like to remain on the page.');
+            if(confirm1){
+            	 var tform = document.forms["fr_cancel_button"];
+            	tform.action=contextPath+"/"+pageName;
+            	tform.submit();
+
+            }
+        }
+        function confirmExitAction( pageName, contextPath){
+            var confirm1 = confirm('Are you sure you want to Exit? Select the OK button if you would like to Exit the transaction. Select the Cancel button if you would like to remain on the page.');
+            if(confirm1){
+            	 var tform = document.forms["fr_cancel_button"];
+            	tform.action=contextPath+"/"+pageName;
+            	tform.submit();
+
+            }
+        }
+</script>
+
+
+
+
+
+
+
+
+
+
+<!--  If Controller Spring based append ../ to urls -->
+
+
+
+
+<!-- Main Navigation -->
+<div class="oc_nav">
+    <div class="oc_nav_meta">
+        <div id="StudyInfo">
+            <div class="clinexia-study-current">
+                
+                    
+                    
+                        <b><a href="/LibreClinica/ViewStudy?id=3&viewFull=yes" title="clinexia-demo-001" alt="clinexia-demo-001">clinexia-demo-001</a></b>
+                    
+                
+                <span class="clinexia-study-code">(Clinexia Demo Study)</span>
+            </div>
+            <a class="clinexia-study-change" href="/LibreClinica/ChangeStudy">Change Study/Site</a>
+        </div>
+
+        <div class="oc_nav_tools">
+            <div id="SearchBox">
+                <form method="GET" action="/LibreClinica/ListStudySubjects" onsubmit="var field = this['findSubjects_f_studySubject.label']; if (field.value == 'Patient ID') { field.value=''; }">
+                    
+                    <input type="text" name="findSubjects_f_studySubject.label" onblur="if (this.value == '') this.value = 'Patient ID'" onfocus="if (this.value == 'Patient ID') this.value = ''" value="Patient ID" class="navSearch"/>
+                    <input type="hidden" name="navBar" value="yes"/>
+                    <input type="submit" value="Go" class="navSearchButton"/>
+                </form>
+            </div>
+
+            <div id="nav_Dashboard" class="clinexia-task-trigger clinexia-task-trigger-link" style="position: relative; z-index: 3;">
+                <a href="/LibreClinica/MainMenu" id="nav_Dashboard_link" >Dashboard</a>
+            </div>
+
+            
+                <div id="nav_Patients" class="clinexia-task-trigger" style="position: relative; z-index: 3;">
+                    <a href="#" onmouseover="setNav('nav_Patients');" id="nav_Patients_link">Patients
+                        <img src="/LibreClinica/images/bt_Tasks_pulldown.gif" alt="Patients" border="0"/></a>
+                </div>
+            
+
+            
+                <div id="nav_SubmitData" class="clinexia-task-trigger" style="position: relative; z-index: 3;">
+                    <a href="#" onmouseover="setNav('nav_SubmitData');" id="nav_SubmitData_link">Submit Data
+                        <img src="/LibreClinica/images/bt_Tasks_pulldown.gif" alt="Submit Data" border="0"/></a>
+                </div>
+            
+
+            
+                <div id="nav_Monitor" class="clinexia-task-trigger" style="position: relative; z-index: 3;">
+                    <a href="#" onmouseover="setNav('nav_Monitor');" id="nav_Monitor_link">Monitor
+                        <img src="/LibreClinica/images/bt_Tasks_pulldown.gif" alt="Monitor" border="0"/></a>
+                </div>
+            
+
+            <div id="nav_Tasks" class="clinexia-task-trigger" style="position: relative; z-index: 3;">
+                <a href="#" onmouseover="setNav('nav_Tasks');" id="nav_Tasks_link">Tasks
+                    <img src="/LibreClinica/images/bt_Tasks_pulldown.gif" alt="Tasks" border="0"/></a>
+            </div>
+
+            <div id="UserInfo">
+                <a class="clinexia-user-badge" href="/LibreClinica/UpdateProfile"><b>root</b> (Data Manager)
+                    <span class="clinexia-user-locale">en</span>
+                </a>
+                <a class="clinexia-logout-link" href="/LibreClinica/j_spring_security_logout">Log Out</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- NAVIGATION DROP-DOWN -->
+
+<div id="nav_hide" style="position: absolute; left: 0px; top: 0px; visibility: hidden; z-index: 2; width: 100%; height: 400px;">
+    <a href="#" onmouseover="hideSubnavs();"><img src="/LibreClinica/images/spacer.gif" alt="" width="1000" height="400" border="0"/></a>
+</div>
+
+<!-- End Main Navigation -->
+
+<div id="subnav_Patients" class="dropdown">
+    <div class="dropdown_BG">
+        
+            <div class="taskGroup">Patients</div>
+            <div class="taskLink"><a href="/LibreClinica/ListStudySubjects">Patient Directory</a></div>
+            
+                <div class="taskLink"><a href="/LibreClinica/AddNewSubject">Add Patient</a></div>
+            
+        
+
+        
+            <div class="taskGroup">Registry</div>
+            <div class="taskLink"><a href="/LibreClinica/ListSubject">Patients</a></div>
+        
+    </div>
+</div>
+
+
+
+<div id="subnav_SubmitData" class="dropdown">
+    <div class="dropdown_BG">
+        <div class="taskGroup">Submit Data</div>
+        <div class="taskLink"><a href="/LibreClinica/ViewNotes?module=submit">Notes &amp; Discrepancies</a></div>
+        
+            <div class="taskLink"><a href="/LibreClinica/CreateNewStudyEvent">Schedule Visit</a></div>
+        
+        <div class="taskLink"><a href="/LibreClinica/ViewStudyEvents">View Visits</a></div>
+        <div class="taskLink"><a href="/LibreClinica/ImportCRFData">Import Data</a></div>
+    </div>
+</div>
+
+
+
+<div id="subnav_Monitor" class="dropdown">
+    <div class="dropdown_BG">
+        <div class="taskGroup">Monitor and Manage Data</div>
+        
+        
+            <div class="taskLink"><a href="/LibreClinica/pages/viewAllSubjectSDVtmp?sdv_restore=true&studyId=3">Source Data Verification</a></div>
+            <div class="taskLink"><a href="/LibreClinica/StudyAuditLog">Study Audit Log</a></div>
+            
+                <div class="taskLink"><a href="/LibreClinica/ViewRuleAssignment?read=true">Rules</a></div>
+            
+        
+    </div>
+</div>
+
+
+<div id="subnav_Tasks" class="dropdown">
+    <div class="dropdown_BG">
+        
+            <div class="taskGroup">Extract Data</div>
+            <div class="taskLink"><a href="/LibreClinica/ViewDatasets">View Datasets</a></div>
+            <div class="taskLink"><a href="/LibreClinica/CreateDataset">Create Dataset</a></div>
+        
+
+        
+            <div class="taskGroup">Study Setup</div>
+            <div class="taskLink"><a href="/LibreClinica/ListStudySubjects">Assign Forms to Visits</a></div>
+            <div class="taskLink"><a href="/LibreClinica/ViewStudy?id=3&viewFull=yes">View Study</a></div>
+            
+                <div class="taskLink"><a href="/LibreClinica/pages/studymodule">Build Study</a></div>
+                <div class="taskLink"><a href="/LibreClinica/ListSubjectGroupClass?read=true">Groups</a></div>
+                <div class="taskLink"><a href="/LibreClinica/ListCRF?module=manage">CRFs</a></div>
+            
+            <div class="taskLink"><a href="/LibreClinica/ListStudyUser">Users</a></div>
+        
+
+        
+
+        
+            <div class="taskGroup">Administration</div>
+            <div class="taskLink"><a href="/LibreClinica/ListStudy">Studies</a></div>
+            <div class="taskLink"><a href="/LibreClinica/ListUserAccounts">Users</a></div>
+            <div class="taskLink"><a href="/LibreClinica/ListCRF?module=admin">CRFs</a></div>
+            <div class="taskLink"><a href="/LibreClinica/ViewAllJobs">Jobs</a></div>
+        
+
+        <div class="taskGroup">Other</div>
+        <div class="taskLink"><a href="/LibreClinica/MainMenu">Home</a></div>
+        <div class="taskLink"><a href="/LibreClinica/UpdateProfile">Update Profile</a></div>
+    </div>
+</div>
+
+<!-- End Main Navigation -->
+
+
+
+
+
+
+
+
+
+<!-- start of sideAlert, show the content after user logs in -->
+
+<table>
+	<tr>
+		<td class="header_td">
+			<table>
+					 
+					
+						
+							<tr id="sidebar_Alerts_open" style="display: all">
+								<td class="sidebar_tab">
+									<a href="javascript:leftnavExpand('sidebar_Alerts_open'); leftnavExpand('sidebar_Alerts_closed');">
+									<img src="/LibreClinica/images/sidebar_collapse.gif" class="sidebar_collapse_expand"></a>
+									<b>Alerts & Messages</b>
+									<div class="sidebar_tab_content">
+										
+											             
+									            
+
+
+
+
+
+
+
+
+
+
+<div class="alert">    
+
+ Welcome to LibreClinica, Root User. You last logged in on 22-Apr-2026.  
+ <br><br>
+
+</div>
+
+
+
+
+
+
+
+
+								            
+											
+	            						
+									</div>
+								</td>
+							</tr>
+							<tr id="sidebar_Alerts_closed" style="display: none">
+								<td class="sidebar_tab">
+									<a href="javascript:leftnavExpand('sidebar_Alerts_open'); leftnavExpand('sidebar_Alerts_closed');">
+									<img src="/LibreClinica/images/sidebar_expand.gif" class="sidebar_collapse_expand"></a>
+									<b>Alerts & Messages</b>
+								</td>
+							</tr>
+						
+							
+						
+			
+<!-- end of sideAlert -->
+		
+
+<script type="text/JavaScript" src="includes/jmesa/jquery.jmesa.js"></script>
+<script type="text/JavaScript" src="includes/jmesa/jmesa.js"></script>
+<script type="text/javascript" src="includes/jmesa/jquery.blockUI.js"></script>
+
+<link rel="stylesheet" href="includes/jmesa/jmesa.css" type="text/css">
+
+<!-- warning is study is frozen or locked -->
+<div id="box" class="dialog">
+	<span id="mbm">
+	    <br>The Study or Site you are logged into is in the status of either Frozen or Locked. This means you will not be able to add any subjects, schedule any events, or enter any data. If the study is Locked, you will not be able to add or respond to any discrepancy notes. Please contact your LibreClinica Administrator if you have any questions about the status of this study or site.
+	</span>
+	<br>
+    <div>
+        <button onclick="hm('box');">OK</button>
+    </div>
+</div>
+
+<!-- then instructions-->
+	<tr id="sidebar_Instructions_open" style="display: all">
+        <td class="sidebar_tab">
+	        <a href="javascript:leftnavExpand('sidebar_Instructions_open'); leftnavExpand('sidebar_Instructions_closed');">
+    	    <img src="images/sidebar_collapse.gif" class="sidebar_collapse_expand"></a>
+			<b>Instructions</b>
+			<div class="sidebar_tab_content">If needed you may change the study/site or request access to a new study with a different role.</div>
+        </td>
+	</tr>
+    <tr id="sidebar_Instructions_closed" style="display: none">
+        <td class="sidebar_tab">
+	        <a href="javascript:leftnavExpand('sidebar_Instructions_open'); leftnavExpand('sidebar_Instructions_closed');">
+	        <img src="images/sidebar_expand.gif" class="sidebar_collapse_expand"></a>
+	        <b>Instructions</b>
+        </td>
+	</tr>
+
+
+
+
+
+  
+ 
+
+<!-- start of include/sideInfo.jsp -->
+	
+
+ 
+ <!-- BWP 3098 >> switch displays for Info box-->
+    <tr id="sidebar_Info_open">
+		<td class="sidebar_tab">
+			<a href="javascript:leftnavExpand('sidebar_Info_open'); leftnavExpand('sidebar_Info_closed');">
+			<img src="/LibreClinica/images/sidebar_collapse.gif" class="sidebar_collapse_expand"></a>
+			<b>Other Info</b>
+			<div class="sidebar_tab_content">
+				<!-- begin standard study info -->
+				
+	                
+
+
+
+
+
+
+
+
+	
+		
+		
+		
+			
+			
+				<b>Study:</b>&nbsp;
+				<a href="/LibreClinica/ViewStudy?id=3&viewFull=yes">clinexia-demo-001</a>
+			
+		
+		<br><br>
+
+		
+		
+
+		<b>Start Date:</b>&nbsp;
+		
+			
+			
+				N/A
+			
+		
+		<br><br>
+
+		<b>End Date:</b>&nbsp; 
+		
+			
+			
+				N/A
+			
+		
+		<br><br>
+
+		<b>PI:</b>&nbsp; Adrian Demo
+		<br><br>
+
+		<b>Protocol Verification/IRB Approval Date:</b>&nbsp;
+		
+			
+			
+				N/A
+			
+		
+	
+	
+
+	                <br><br>
+	        	
+				         
+	            	
+	                	
+	                
+	                
+				         
+				<!-- end standard study info -->   
+			</div>
+		</td>
+	</tr>
+    <!-- BWP 3098 >> switch displays for Info box-->
+    <tr id="sidebar_Info_closed" style="display: none">
+		<td class="sidebar_tab">
+			<a href="javascript:leftnavExpand('sidebar_Info_open'); leftnavExpand('sidebar_Info_closed');">
+			<img src="/LibreClinica/images/sidebar_expand.gif" class="sidebar_collapse_expand"></a>
+			<b>Other Info</b>
+		</td>
+	</tr>
+	
+		
+	
+	
+		<!-- condition 1 true -->
+		
+
+
+
+
+
+
+<tr id="sidebar_IconKey_open">
+    <td class="sidebar_tab">
+
+        <a href="javascript:leftnavExpand('sidebar_IconKey_open'); leftnavExpand('sidebar_IconKey_closed');"><img src="images/sidebar_collapse.gif" border="0" align="right" hspace="10"></a>
+
+        <b>Icon Key</b><br clear="all"><br>
+
+        <table border="0" cellpadding="4" cellspacing="0" width="100%">
+            <tr>
+                <td><strong><u>Statuses</u></strong></td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_NotStarted.gif"></td>
+                <td>Not Started</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_Scheduled.gif"></td>
+                <td>Scheduled</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_InitialDE.gif"></td>
+                <td>Data Entry Started</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_Stopped.gif"></td>
+                <td>Stopped</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_Skipped.gif"></td>
+                <td>Skipped</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_DEcomplete.gif"></td>
+                <td>Completed</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_Signed.gif"></td>
+                <td>signed</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_Locked.gif"></td>
+                <td>Locked</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/icon_Invalid.gif"></td>
+                <td>Invalid</td>
+            </tr>
+            <tr>
+                <td><strong><u>Actions</u></strong></td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/bt_View.gif"></td>
+                <td>View</td>
+            </tr>
+            <tr>
+                <td>&nbsp;<img src="images/bt_Edit.gif"></td>
+                <td>Edit</td>
+            </tr>
+            
+                <tr>
+                    <td>&nbsp;<img src="images/bt_Remove.gif"></td>
+                    <td>Remove</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;<img src="images/bt_Restore.gif"></td>
+                    <td>Restore</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;<img src="images/bt_Reassign.gif"></td>
+                    <td>Reassign</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;<img src="images/icon_Signed.gif"></td>
+                    <td>Sign</td>
+                </tr>
+            
+        </table>
+
+        <div class="sidebar_tab_content">
+
+        </div>
+
+    </td>
+</tr>
+
+<tr id="sidebar_IconKey_closed" style="display: none">
+    <td class="sidebar_tab">
+
+        <a href="javascript:leftnavExpand('sidebar_IconKey_open'); leftnavExpand('sidebar_IconKey_closed');"><img src="images/sidebar_expand.gif" border="0" align="right" hspace="10"></a>
+
+        <b>Icon Key</b>
+
+    </td>
+</tr>
+	 	
+	
+  <!-- BWP 3098: show icons by default; added   || closeInfoShowIcons-->
+    
+
+  </table>         
+	 
+		
+		
+	
+  	
+
+
+
+
+<!-- End Sidebar Contents -->
+
+	<br><img src="/LibreClinica/images/spacer.gif" width="120" height="1">
+	</td>
+	<td class="aka_revised_content">
+<!-- end of include/sideInfo.jsp -->
+
+
+
+
+	
+	
+
+
+<div class="clinexia-dashboard-page">
+    <section class="card clinexia-dashboard-hero">
+        <div class="clinexia-dashboard-hero-copy">
+            <span class="clinexia-page-eyebrow">Clinexia Dashboard</span>
+            <h1 class="clinexia-page-title">Overview del estudio</h1>
+            <p class="clinexia-page-subtitle">
+                
+                    
+                    
+                        clinexia-demo-001
+                    
+                
+                <span class="clinexia-page-separator">-</span>
+                Clinexia Demo Study
+            </p>
+            <p class="clinexia-page-summary">Seguimiento de pacientes, visitas y alertas en una sola pantalla.</p>
+            <button type="button" class="clinexia-tour-trigger" onclick="startClinexiaOnboarding(true);">Take tour</button>
+        </div>
+        <div class="clinexia-study-chip">
+            <span class="clinexia-study-chip-label">Sesion activa</span>
+            <strong>Data Manager</strong>
+        </div>
+    </section>
+
+    <section class="clinexia-dashboard-grid clinexia-metrics-grid">
+        <article class="card clinexia-metric-card clinexia-metric-card-featured">
+            <span class="clinexia-metric-label">Pacientes Enrolados</span>
+            <strong class="clinexia-metric-value" id="metricEnrolled">--</strong>
+            <span class="clinexia-metric-subtitle" id="metricEnrolledSub">Listos para seguimiento clinico</span>
+        </article>
+
+        <article class="card clinexia-metric-card clinexia-progress-card clinexia-metric-card-featured">
+            <div>
+                <span class="clinexia-metric-label">Progreso del Estudio</span>
+                <strong class="clinexia-metric-value" id="metricProgress">--</strong>
+                <span class="clinexia-metric-subtitle" id="metricProgressSub">Carga clinica completada</span>
+            </div>
+            <div class="clinexia-progress-ring" id="metricProgressRing">
+                <span>CSS</span>
+            </div>
+        </article>
+
+        <article class="card clinexia-metric-card clinexia-alert-card clinexia-metric-card-featured is-low">
+            <span class="clinexia-metric-label">Alertas</span>
+            <strong class="clinexia-metric-value" id="metricAlerts" data-count="0">0</strong>
+            <span class="clinexia-metric-subtitle" id="metricAlertsSub">Requieren seguimiento operativo</span>
+            <a class="clinexia-metric-link" href="ViewNotes?module=submit&listNotes_f_discrepancyNoteBean.user=root">Ver alertas activas</a>
+        </article>
+    </section>
+
+    <section class="card clinexia-task-card" id="clinexia-task-panel">
+        <div class="clinexia-panel-head">
+            <div>
+                <h2>Acciones principales</h2>
+                <p>Entradas directas para mostrar el flujo del producto en segundos.</p>
+            </div>
+        </div>
+        <div class="clinexia-cta-grid">
+            <a class="clinexia-cta-card" href="/LibreClinica/ListStudySubjects">
+                <span class="clinexia-cta-eyebrow">Patients</span>
+                <strong>View Patients</strong>
+                <span>Accede al directorio y revisa estado, progreso y visitas.</span>
+            </a>
+            
+                <a class="clinexia-cta-card clinexia-cta-card-primary" href="/LibreClinica/AddNewSubject">
+                    <span class="clinexia-cta-eyebrow">Enrollment</span>
+                    <strong>Add Patient</strong>
+                    <span>Inicia una nueva alta con el flujo simplificado de Clinexia.</span>
+                </a>
+            
+            <a class="clinexia-cta-card" id="clinexia-tour-visits-link" href="/LibreClinica/ViewStudyEvents">
+                <span class="clinexia-cta-eyebrow">Visits</span>
+                <strong>View Visits</strong>
+                <span>Abre el seguimiento de visitas y formularios del estudio.</span>
+            </a>
+        </div>
+        <div class="clinexia-quick-actions">
+            <a href="/LibreClinica/MainMenu">Dashboard</a>
+            <a href="/LibreClinica/ViewNotes?module=submit">Alerts</a>
+            <a href="/LibreClinica/StudyAuditLog">Audit Log</a>
+            
+                <a href="/LibreClinica/AdminSystem">Admin</a>
+            
+        </div>
+    </section>
+
+    <section class="clinexia-dashboard-grid clinexia-panel-grid">
+        
+
+        
+            <script type="text/javascript">
+                function onInvokeAction(id,action) {
+                    if(id.indexOf('studySiteStatistics') == -1)  {
+                        setExportToLimit(id, '');
+                    }
+                    if(id.indexOf('subjectEventStatusStatistics') == -1)  {
+                        setExportToLimit(id, '');
+                    }
+                    if(id.indexOf('studySubjectStatusStatistics') == -1)  {
+                        setExportToLimit(id, '');
+                    }
+                    createHiddenInputFieldsForLimitAndSubmit(id);
+                }
+            </script>
+
+            <div class="card clinexia-panel-card" id="studySiteStatisticsPanel">
+                <div class="clinexia-panel-head">
+                    <div>
+                        <h2>Sites</h2>
+                        <p>Cobertura activa y distribucion operativa del estudio.</p>
+                    </div>
+                </div>
+                <form action="/LibreClinica/MainMenu">
+                    <div class="jmesa" >
+<table id="studySiteStatistics"  border="0"  cellpadding="0"  cellspacing="0"  class="table"  width="375px" >
+	<thead>
+<thead
+<tr class="header" >
+<td colspan="4"  style="border-bottom: 1px solid white;background-color:white;color:grey;"  align="center" >Subject Enrollment By Site</td>
+</thead>
+	<tr class="header" >
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySiteStatistics','0','name','asc');onInvokeAction('studySiteStatistics', 'sort')" >Site</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySiteStatistics','1','enrolled','asc');onInvokeAction('studySiteStatistics', 'sort')" >Enrolled</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySiteStatistics','2','expectedTotalEnrollment','asc');onInvokeAction('studySiteStatistics', 'sort')" >Expected Enrollment</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySiteStatistics','3','percentage','asc');onInvokeAction('studySiteStatistics', 'sort')" >Percentage</div></td>
+	</tr>
+	</thead>
+	<tbody class="tbody" >
+	<tr id="studySiteStatistics_row1"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>Demo Site 01</td>
+		<td>0</td>
+		<td>10</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	</tbody>
+</table>
+</div>
+<script type="text/javascript" >
+	jQuery.jmesa.addTableFacade('studySiteStatistics');
+	jQuery.jmesa.setMaxRowsToLimit('studySiteStatistics','1');
+	jQuery.jmesa.setPageToLimit('studySiteStatistics','1');
+	jQuery.jmesa.setOnInvokeAction('studySiteStatistics','onInvokeAction');
+	jQuery.jmesa.setOnInvokeExportAction('studySiteStatistics','onInvokeExportAction');
+</script>
+                </form>
+            </div>
+
+            <div class="card clinexia-panel-card" id="studyStatisticsPanel">
+                <div class="clinexia-panel-head">
+                    <div>
+                        <h2>Progreso</h2>
+                        <p>Avance general de la operacion clinica.</p>
+                    </div>
+                </div>
+                <form action="/LibreClinica/MainMenu">
+                    <div class="jmesa" >
+<table id="studyStatistics"  border="0"  cellpadding="0"  cellspacing="0"  class="table"  width="363px" >
+	<thead>
+<thead
+<tr class="header" >
+<td colspan="4"  style="border-bottom: 1px solid white;background-color:white;color:grey;"  align="center" >Subject Enrollment For Study</td>
+</thead>
+	<tr class="header" >
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studyStatistics','0','name','asc');onInvokeAction('studyStatistics', 'sort')" >Study</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studyStatistics','1','enrolled','asc');onInvokeAction('studyStatistics', 'sort')" >Enrolled</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studyStatistics','2','expectedTotalEnrollment','asc');onInvokeAction('studyStatistics', 'sort')" >Expected Enrollment</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studyStatistics','3','percentage','asc');onInvokeAction('studyStatistics', 'sort')" >Percentage</div></td>
+	</tr>
+	</thead>
+	<tbody class="tbody" >
+	<tr id="studyStatistics_row1"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>clinexia-demo-001</td>
+		<td>2</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	</tbody>
+</table>
+</div>
+<script type="text/javascript" >
+	jQuery.jmesa.addTableFacade('studyStatistics');
+	jQuery.jmesa.setMaxRowsToLimit('studyStatistics','15');
+	jQuery.jmesa.setPageToLimit('studyStatistics','1');
+	jQuery.jmesa.setOnInvokeAction('studyStatistics','onInvokeAction');
+	jQuery.jmesa.setOnInvokeExportAction('studyStatistics','onInvokeExportAction');
+</script>
+                </form>
+            </div>
+
+            <div class="card clinexia-panel-card" id="subjectEventStatusPanel">
+                <div class="clinexia-panel-head">
+                    <div>
+                        <h2>Visits</h2>
+                        <p>Estado de visitas y seguimiento operativo.</p>
+                    </div>
+                </div>
+                <form action="/LibreClinica/MainMenu">
+                    <div class="jmesa" >
+<table id="subjectEventStatusStatistics"  border="0"  cellpadding="0"  cellspacing="0"  class="table"  width="375px" >
+	<thead>
+<thead
+<tr class="header" >
+<td colspan="4"  style="border-bottom: 1px solid white;background-color:white;color:grey;"  align="center" >Study Progress</td>
+</thead>
+	<tr class="header" >
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('subjectEventStatusStatistics','0','status','asc');onInvokeAction('subjectEventStatusStatistics', 'sort')" >Event Status</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('subjectEventStatusStatistics','1','studySubjects','asc');onInvokeAction('subjectEventStatusStatistics', 'sort')" ># of Events</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('subjectEventStatusStatistics','2','percentage','asc');onInvokeAction('subjectEventStatusStatistics', 'sort')" >Percentage</div></td>
+	</tr>
+	</thead>
+	<tbody class="tbody" >
+	<tr id="subjectEventStatusStatistics_row1"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>scheduled</td>
+		<td>2</td>
+		<td><div class="graph" ><div class="bar"  style="width: 100%" >100%</div></div></td>
+	</tr>
+	<tr id="subjectEventStatusStatistics_row2"  class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>data entry started</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	<tr id="subjectEventStatusStatistics_row3"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>completed</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	<tr id="subjectEventStatusStatistics_row4"  class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>signed</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	<tr id="subjectEventStatusStatistics_row5"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>locked</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	<tr id="subjectEventStatusStatistics_row6"  class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>skipped</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	<tr id="subjectEventStatusStatistics_row7"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>stopped</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	</tbody>
+</table>
+</div>
+<script type="text/javascript" >
+	jQuery.jmesa.addTableFacade('subjectEventStatusStatistics');
+	jQuery.jmesa.setMaxRowsToLimit('subjectEventStatusStatistics','15');
+	jQuery.jmesa.setPageToLimit('subjectEventStatusStatistics','1');
+	jQuery.jmesa.setOnInvokeAction('subjectEventStatusStatistics','onInvokeAction');
+	jQuery.jmesa.setOnInvokeExportAction('subjectEventStatusStatistics','onInvokeExportAction');
+</script>
+                </form>
+            </div>
+
+            <div class="card clinexia-panel-card" id="studySubjectStatusPanel">
+                <div class="clinexia-panel-head">
+                    <div>
+                        <h2>Pacientes</h2>
+                        <p>Actividad de pacientes y avance de enrolamiento.</p>
+                    </div>
+                </div>
+                <form action="/LibreClinica/MainMenu">
+                    <div class="jmesa" >
+<table id="studySubjectStatusStatistics"  border="0"  cellpadding="0"  cellspacing="0"  class="table"  width="350px" >
+	<thead>
+<thead
+<tr class="header" >
+<td colspan="4"  style="border-bottom: 1px solid white;background-color:white;color:grey;"  align="center" >Subject Status Count</td>
+</thead>
+	<tr class="header" >
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySubjectStatusStatistics','0','status','asc');onInvokeAction('studySubjectStatusStatistics', 'sort')" >Study Subject Status</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySubjectStatusStatistics','1','studySubjects','asc');onInvokeAction('studySubjectStatusStatistics', 'sort')" ># of Study Subjects</div></td>
+		<td><div onmouseover="this.style.cursor='pointer'"  onmouseout="this.style.cursor='default'"  onclick="jQuery.jmesa.addSortToLimit('studySubjectStatusStatistics','2','percentage','asc');onInvokeAction('studySubjectStatusStatistics', 'sort')" >Percentage</div></td>
+	</tr>
+	</thead>
+	<tbody class="tbody" >
+	<tr id="studySubjectStatusStatistics_row1"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>available</td>
+		<td>2</td>
+		<td><div class="graph" ><div class="bar"  style="width: 100%" >100%</div></div></td>
+	</tr>
+	<tr id="studySubjectStatusStatistics_row2"  class="even"  onmouseover="this.className='highlight'"  onmouseout="this.className='even'" >
+		<td>signed</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	<tr id="studySubjectStatusStatistics_row3"  class="odd"  onmouseover="this.className='highlight'"  onmouseout="this.className='odd'" >
+		<td>removed</td>
+		<td>0</td>
+		<td><div class="graph" ><div class="bar"  style="width: 0%" >0%</div></div></td>
+	</tr>
+	</tbody>
+</table>
+</div>
+<script type="text/javascript" >
+	jQuery.jmesa.addTableFacade('studySubjectStatusStatistics');
+	jQuery.jmesa.setMaxRowsToLimit('studySubjectStatusStatistics','15');
+	jQuery.jmesa.setPageToLimit('studySubjectStatusStatistics','1');
+	jQuery.jmesa.setOnInvokeAction('studySubjectStatusStatistics','onInvokeAction');
+	jQuery.jmesa.setOnInvokeExportAction('studySubjectStatusStatistics','onInvokeExportAction');
+</script>
+                </form>
+            </div>
+        
+
+        
+    </section>
+
+</div>
+
+<script type="text/javascript">
+    (function () {
+        function getText(id) {
+            var el = document.getElementById(id);
+            return el ? (el.textContent || el.innerText || "") : "";
+        }
+
+        function extractFirstNumber(text) {
+            var match = (text || "").replace(/\s+/g, " ").match(/\d+(?:[.,]\d+)?/);
+            return match ? match[0].replace(",", ".") : null;
+        }
+
+        function extractPercent(text) {
+            var match = (text || "").match(/(\d+(?:[.,]\d+)?)\s*%/);
+            return match ? Math.round(parseFloat(match[1].replace(",", "."))) : null;
+        }
+
+        var metricEnrolled = document.getElementById("metricEnrolled");
+        var metricEnrolledSub = document.getElementById("metricEnrolledSub");
+        var metricProgress = document.getElementById("metricProgress");
+        var metricProgressSub = document.getElementById("metricProgressSub");
+        var metricProgressRing = document.getElementById("metricProgressRing");
+        var metricAlerts = document.getElementById("metricAlerts");
+        var metricAlertsSub = document.getElementById("metricAlertsSub");
+
+        var enrolled = extractFirstNumber(getText("studySubjectStatusPanel")) ||
+            extractFirstNumber(getText("findSubjectsPanel")) ||
+            extractFirstNumber(getText("studyStatisticsPanel"));
+        if (enrolled && metricEnrolled) {
+            metricEnrolled.textContent = enrolled;
+        }
+
+        var siteCount = extractFirstNumber(getText("studySiteStatisticsPanel"));
+        if (siteCount && metricEnrolledSub) {
+            metricEnrolledSub.textContent = siteCount + " sitios activos";
+        }
+
+        var progress = extractPercent(getText("studyStatisticsPanel")) ||
+            extractPercent(getText("subjectEventStatusPanel"));
+        if (progress !== null && metricProgress && metricProgressRing) {
+            metricProgress.textContent = progress + "%";
+            metricProgressRing.style.setProperty("--progress", progress + "%");
+            metricProgressRing.querySelector("span").textContent = progress + "%";
+            if (metricProgressSub) {
+                metricProgressSub.textContent = progress >= 80 ? "Operacion en ritmo" : "Seguimiento en curso";
+            }
+        }
+
+        if (metricAlerts) {
+            var alertCount = parseInt(metricAlerts.getAttribute("data-count"), 10) || 0;
+            metricAlerts.textContent = alertCount;
+            if (metricAlertsSub) {
+                if (alertCount > 5) {
+                    metricAlertsSub.textContent = "Prioridad alta para el equipo";
+                } else if (alertCount > 0) {
+                    metricAlertsSub.textContent = "Pendientes para revisar hoy";
+                } else {
+                    metricAlertsSub.textContent = "Sin bloqueos operativos";
+                }
+            }
+        }
+    })();
+</script>
+
+<!-- end of menu.jsp -->
+
+
+
+
+<!-- start of include/footer.jsp -->
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<table class="footer_table">
+    <tr>
+        <td class="footer_left">
+            <div class="clinexia-footer-stack">
+                <span class="clinexia-footer-brand">Clinexia</span>
+                <span class="clinexia-footer-product">Platform</span>
+            </div>
+        </td>
+        <td class="footer_middle" >
+            <span class="clinexia-footer-copy">Clinical operations workspace</span>
+		</td>
+        <td class="footer_right" >
+            <div class="clinexia-footer-version">
+                <span>Version 1.4.0-rc1</span>
+                <span>Build local</span>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<!-- end of include/footer.jsp -->
+</body>
+</html>
+

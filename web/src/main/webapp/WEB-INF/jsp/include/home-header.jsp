@@ -77,7 +77,7 @@
             <tr>
                 <td>
 <!-- Logo -->
-    <div class="logo"><img src="${pageContext.request.contextPath}/images/Logo.gif"></div>
+    <a class="logo clinexia-brand" href="${pageContext.request.contextPath}/MainMenu" title="Clinexia Dashboard" aria-label="Clinexia Dashboard"><img src="${pageContext.request.contextPath}/images/Logo.gif"></a>
 <!-- Main Navigation -->
     <jsp:include page="../include/navBar.jsp"/>
 <!-- End Main Navigation -->

@@ -69,6 +69,12 @@ session.setAttribute("coreResources", coreResources);
 <c:set var="restore" value="true"/>
 <c:if test="${tableFacadeRestore=='false'}"><c:set var="restore" value="false"/></c:if>
 <c:set var="profilePage" value="${param.profilePage}"/>
+<c:set var="currentRequestUri" value="${pageContext.request.requestURI}" />
+<c:set var="isDashboardPage" value="${fn:contains(currentRequestUri, '/MainMenu')}" />
+<c:set var="dashboardNavClass" value="clinexia-task-trigger clinexia-task-trigger-link" />
+<c:if test="${isDashboardPage}">
+    <c:set var="dashboardNavClass" value="${dashboardNavClass} is-active" />
+</c:if>
 <!--  If Controller Spring based append ../ to urls -->
 <c:set var="urlPrefix" value="${pageContext.request.contextPath}/"/>
 <c:set var="requestFromSpringController" value="${param.isSpringController}" />
@@ -105,6 +111,10 @@ session.setAttribute("coreResources", coreResources);
                     <input type="hidden" name="navBar" value="yes"/>
                     <input type="submit" value="<fmt:message key="go" bundle="${resword}"/>" class="navSearchButton"/>
                 </form>
+            </div>
+
+            <div id="nav_Dashboard" class="${dashboardNavClass}" style="position: relative; z-index: 3;">
+                <a href="${urlPrefix}MainMenu" id="nav_Dashboard_link" <c:if test="${isDashboardPage}">aria-current="page"</c:if>>Dashboard</a>
             </div>
 
             <c:if test="${userRole.coordinator || userRole.director || userRole.researchAssistant || userRole.researchAssistant2 || userRole.investigator || userRole.monitor || userBean.sysAdmin || userBean.techAdmin}">
@@ -213,6 +223,7 @@ session.setAttribute("coreResources", coreResources);
 
         <c:if test="${userRole.coordinator || userRole.director}">
             <div class="taskGroup"><fmt:message key="nav_study_setup" bundle="${resword}"/></div>
+            <div class="taskLink"><a href="${urlPrefix}ListStudySubjects">Assign Forms to Visits</a></div>
             <div class="taskLink"><a href="${urlPrefix}ViewStudy?id=${study.id}&viewFull=yes"><fmt:message key="nav_view_study" bundle="${resword}"/></a></div>
             <c:if test="${!(study.parentStudyId > 0 && (userRole.coordinator || userRole.director))}">
                 <div class="taskLink"><a href="${urlPrefix}pages/studymodule"><fmt:message key="nav_build_study" bundle="${resword}"/></a></div>

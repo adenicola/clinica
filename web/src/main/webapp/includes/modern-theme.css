@@ -219,6 +219,20 @@ small,
   color: var(--lc-primary-hover) !important;
 }
 
+.clinexia-task-trigger.is-active a:link,
+.clinexia-task-trigger.is-active a:visited {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
+}
+
+.clinexia-task-trigger.is-active a:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff !important;
+}
+
 #StudyInfo,
 #UserInfo {
   color: var(--lc-text-soft);
@@ -388,6 +402,29 @@ small,
 
 .dropdown_BG > .taskGroup:first-child {
   margin-top: 0;
+}
+
+.menu-contextual,
+.clinexia-context-menu {
+  position: fixed !important;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10000 !important;
+  border-radius: 14px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+}
+
+.menu-contextual .tablebox_center,
+.clinexia-context-menu .tablebox_center,
+.menu-contextual .ViewSubjectsPopup,
+.clinexia-context-menu .ViewSubjectsPopup {
+  overflow: visible !important;
+}
+
+.clinexia-context-lock {
+  position: fixed !important;
+  z-index: 9998 !important;
 }
 
 .taskLeftColumn,
@@ -739,6 +776,11 @@ button:hover,
     linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
+.clinexia-dashboard-hero-copy {
+  display: grid;
+  gap: 8px;
+}
+
 .clinexia-page-eyebrow {
   display: inline-block;
   margin-bottom: 10px;
@@ -758,6 +800,14 @@ button:hover,
 .clinexia-page-subtitle {
   font-size: 15px;
   color: var(--lc-text-soft);
+}
+
+.clinexia-page-summary {
+  max-width: 620px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--lc-text);
 }
 
 .clinexia-page-separator {
@@ -808,6 +858,21 @@ button:hover,
   min-height: 170px;
 }
 
+.clinexia-metric-card-featured {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(37, 99, 235, 0.08);
+  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.06);
+}
+
+.clinexia-metric-card-featured::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 0 18px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0), rgba(37, 99, 235, 0.18), rgba(37, 99, 235, 0));
+}
+
 .clinexia-metric-label {
   font-size: 13px;
   font-weight: 700;
@@ -825,6 +890,13 @@ button:hover,
   margin-top: auto;
   font-size: 14px;
   color: var(--lc-text-soft);
+}
+
+.clinexia-metric-link {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--lc-primary) !important;
 }
 
 .clinexia-progress-card {
@@ -908,6 +980,58 @@ button:hover,
 
 .clinexia-task-card {
   padding-top: 24px;
+}
+
+.clinexia-cta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.clinexia-cta-card {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-height: 170px;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid #dbe4f0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+  color: var(--lc-text) !important;
+  text-decoration: none;
+}
+
+.clinexia-cta-card:hover {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%);
+  transform: translateY(-1px);
+}
+
+.clinexia-cta-card-primary {
+  border-color: rgba(37, 99, 235, 0.24);
+  background: linear-gradient(145deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.clinexia-cta-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lc-primary);
+}
+
+.clinexia-cta-card strong {
+  font-size: 24px;
+  line-height: 1.05;
+  color: #0f172a;
+}
+
+.clinexia-cta-card span:last-child {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--lc-text-soft);
 }
 
 .clinexia-quick-actions {
@@ -1178,6 +1302,7 @@ button:hover,
     align-items: flex-start;
   }
 
+  .clinexia-cta-grid,
   .clinexia-metrics-grid,
   .clinexia-panel-grid {
     grid-template-columns: 1fr;
@@ -1270,6 +1395,12 @@ button:hover,
   color: #fff !important;
 }
 
+.clinexia-patients-primary-cta {
+  min-width: 168px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
 .clinexia-patients-toolbar {
   display: grid;
   grid-template-columns: minmax(260px, 2fr) minmax(180px, 1fr) minmax(180px, 1fr);
@@ -1349,6 +1480,22 @@ button:hover,
   background: rgba(37, 99, 235, 0.03);
 }
 
+.clinexia-patient-row {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clinexia-patient-row:focus {
+  outline: 3px solid rgba(37, 99, 235, 0.18);
+  outline-offset: -3px;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.clinexia-patient-row:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+
 .clinexia-patient-id {
   display: flex;
   flex-direction: column;
@@ -1356,11 +1503,12 @@ button:hover,
 }
 
 .clinexia-patient-id a {
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
   color: var(--lc-text);
 }
 
-.clinexia-patient-id span {
+.clinexia-patient-meta {
   color: var(--lc-text-soft);
   font-size: 12px;
 }
@@ -1432,14 +1580,310 @@ button:hover,
   font-weight: 700;
 }
 
+.clinexia-table-action-open {
+  min-width: 88px;
+  min-height: 38px;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  font-weight: 800;
+}
+
 .clinexia-table-action:hover {
   background: rgba(37, 99, 235, 0.16);
 }
 
+.clinexia-visits-shell {
+  display: grid;
+  gap: 18px;
+  margin: 10px 0 28px;
+}
+
+.clinexia-visits-card {
+  padding-bottom: 20px;
+}
+
+.clinexia-visits-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 260px) minmax(220px, 260px);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.clinexia-visit-status-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.clinexia-visit-status-card {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.clinexia-visit-status-card strong {
+  font-size: 28px;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.clinexia-visit-status-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.clinexia-visits-table {
+  min-width: 860px;
+}
+
+.clinexia-visits-row {
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clinexia-visits-row:hover {
+  background: rgba(37, 99, 235, 0.04);
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+
+.clinexia-visits-row:focus {
+  outline: 3px solid rgba(37, 99, 235, 0.18);
+  outline-offset: -3px;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.clinexia-visits-visit-name {
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.clinexia-visits-action-cell {
+  width: 160px;
+}
+
+.clinexia-visits-action-button {
+  min-width: 124px;
+  min-height: 40px;
+  border-radius: 12px;
+  background: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.32);
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.18);
+}
+
+.clinexia-visits-action-button:hover {
+  background: #1d4ed8;
+  color: #ffffff !important;
+}
+
+.clinexia-status-badge-visit-scheduled {
+  background: rgba(148, 163, 184, 0.16);
+  color: #475569;
+}
+
+.clinexia-status-badge-visit-progress {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.clinexia-status-badge-visit-completed {
+  background: rgba(16, 185, 129, 0.14);
+  color: #047857;
+}
+
+.clinexia-visits-legacy-panel {
+  margin-top: 0;
+}
+
+.clinexia-schedule-cell {
+  display: grid;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.clinexia-schedule-visit {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.clinexia-schedule-visit-repeat {
+  background: #f8fafc;
+}
+
+.clinexia-schedule-visit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.clinexia-schedule-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.clinexia-schedule-status-active {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.clinexia-schedule-status-completed {
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+
+.clinexia-schedule-status-warning {
+  background: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+}
+
+.clinexia-schedule-status-empty {
+  background: rgba(148, 163, 184, 0.18);
+  color: #475569;
+}
+
+.clinexia-schedule-occurrence {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.clinexia-schedule-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clinexia-schedule-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.clinexia-inline-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #dbe4f0;
+  background: #f8fafc;
+  color: #1e293b !important;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.clinexia-inline-action-main {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.12);
+}
+
+.clinexia-inline-action:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8 !important;
+}
+
+.clinexia-inline-action-primary {
+  border-color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8 !important;
+}
+
+.clinexia-inline-action-main.clinexia-inline-action-primary {
+  border-color: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff !important;
+}
+
+.clinexia-inline-action-main.clinexia-inline-action-primary:hover {
+  border-color: #1d4ed8;
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  color: #ffffff !important;
+}
+
+.clinexia-inline-empty {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .clinexia-patient-empty {
-  padding: 18px 0 8px;
-  color: var(--lc-text-soft);
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  padding: 28px 24px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
   text-align: center;
+}
+
+.clinexia-patient-empty-title {
+  color: var(--lc-text);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.clinexia-patient-empty-copy {
+  max-width: 540px;
+  margin: 0;
+  color: var(--lc-text-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.clinexia-empty-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.clinexia-primary-action {
+  min-height: 42px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+}
+
+.clinexia-primary-action:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
 }
 
 .clinexia-legacy-panel {
@@ -1668,11 +2112,17 @@ button:hover,
   padding: 26px 30px;
 }
 
+.clinexia-patient-hero-copy {
+  display: grid;
+  gap: 12px;
+}
+
 .clinexia-patient-title {
   margin: 6px 0 10px;
   color: #0f172a;
-  font-size: 32px;
-  line-height: 1.05;
+  font-size: 40px;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
 }
 
 .clinexia-patient-meta {
@@ -1687,9 +2137,48 @@ button:hover,
   font-weight: 600;
 }
 
+.clinexia-patient-header-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.clinexia-patient-header-facts span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.clinexia-patient-header-facts strong {
+  margin-right: 6px;
+  color: #0f172a;
+}
+
 .clinexia-patient-hero-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
+}
+
+.clinexia-hero-primary-action {
+  min-width: 164px;
+  min-height: 40px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+}
+
+.clinexia-hero-primary-action:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  color: #ffffff !important;
 }
 
 .clinexia-patient-layout {
@@ -1726,6 +2215,83 @@ button:hover,
 .clinexia-patient-card-header p {
   margin: 0;
   color: #64748b;
+}
+
+.clinexia-feedback-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.clinexia-feedback-tile {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.clinexia-feedback-kicker {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.clinexia-feedback-tile strong {
+  color: #0f172a;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.clinexia-feedback-tile span:last-child {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.clinexia-feedback-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8 !important;
+  font-weight: 700;
+}
+
+.clinexia-feedback-link:hover {
+  background: rgba(37, 99, 235, 0.16);
+  color: #1d4ed8 !important;
+}
+
+.clinexia-feedback-tile.is-status {
+  background: linear-gradient(145deg, #eff6ff, #f8fafc);
+  border-color: #dbeafe;
+}
+
+.clinexia-feedback-tile.is-success {
+  background: linear-gradient(145deg, #ecfdf5, #f8fafc);
+  border-color: #a7f3d0;
+}
+
+.clinexia-feedback-tile.is-warning {
+  background: linear-gradient(145deg, #fff7ed, #f8fafc);
+  border-color: #fdba74;
+}
+
+.clinexia-feedback-tile.is-error {
+  background: linear-gradient(145deg, #fef2f2, #fff7f7);
+  border-color: #fca5a5;
+}
+
+.clinexia-feedback-tile.is-info {
+  background: linear-gradient(145deg, #eff6ff, #f8fafc);
+  border-color: #bfdbfe;
 }
 
 .clinexia-patient-summary {
@@ -1786,7 +2352,8 @@ button:hover,
   padding: 20px;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
 }
 
 .clinexia-visit-header {
@@ -1820,6 +2387,13 @@ button:hover,
   font-size: 13px;
 }
 
+.clinexia-visit-action-copy {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .clinexia-visit-header-actions {
   display: flex;
   align-items: center;
@@ -1828,7 +2402,32 @@ button:hover,
 }
 
 .clinexia-visit-action {
-  min-width: 122px;
+  min-width: 148px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff !important;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.18);
+}
+
+.clinexia-visit-action:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  color: #ffffff !important;
+}
+
+.clinexia-inline-alert {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .clinexia-visit-progress {
@@ -1837,7 +2436,7 @@ button:hover,
   margin-bottom: 16px;
   padding: 14px 16px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.9);
   border: 1px solid #e2e8f0;
 }
 
@@ -1884,7 +2483,13 @@ button:hover,
 }
 
 .clinexia-form-row-empty {
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.clinexia-form-row-copy {
+  min-width: 0;
 }
 
 .clinexia-form-row-pending {
@@ -1940,11 +2545,19 @@ button:hover,
   font-weight: 600;
 }
 
+.clinexia-legacy-detail-sections {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .clinexia-form-card,
   .clinexia-form-meta,
   .clinexia-secondary-actions {
     width: 100%;
+  }
+
+  .clinexia-feedback-strip {
+    grid-template-columns: 1fr;
   }
 
   .clinexia-form-overview,
@@ -1963,6 +2576,7 @@ button:hover,
   }
 
   .clinexia-patient-hero,
+  .clinexia-feedback-strip,
   .clinexia-patient-card-header,
   .clinexia-visit-header,
   .clinexia-visit-progress-copy,
@@ -1978,10 +2592,18 @@ button:hover,
   .clinexia-patient-summary {
     text-align: left;
   }
+
+  .clinexia-patient-title {
+    font-size: 32px;
+  }
 }
 
 @media (max-width: 1080px) {
   .clinexia-patients-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .clinexia-visits-toolbar {
     grid-template-columns: 1fr;
   }
 
@@ -2103,6 +2725,43 @@ button:hover,
   color: #1d4ed8;
 }
 
+.clinexia-feedback-strip-form {
+  margin-top: 20px;
+}
+
+.clinexia-form-progress-card {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #eff6ff, #f8fbff);
+}
+
+.clinexia-form-progress-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.clinexia-form-progress-copy strong {
+  color: #0f172a;
+  font-size: 18px;
+}
+
+.clinexia-form-progress-copy span:last-child {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.clinexia-form-progress-track {
+  width: 100%;
+}
+
+.clinexia-form-progress-bar {
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
 .clinexia-form-toolbar-card {
   display: grid;
   gap: 14px;
@@ -2138,6 +2797,21 @@ button:hover,
 .clinexia-feedback-badge.is-unsaved {
   background: rgba(245, 158, 11, 0.14);
   color: #b45309;
+}
+
+.clinexia-secondary-button {
+  min-width: 132px;
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #dbe2ea !important;
+  box-shadow: none !important;
+}
+
+.clinexia-secondary-button:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  transform: none;
 }
 
 .clinexia-complete-submit {
@@ -2216,6 +2890,10 @@ button:hover,
   border-bottom: 1px solid #e2e8f0;
 }
 
+.clinexia-form-content-table > tbody > tr > td {
+  vertical-align: top;
+}
+
 .clinexia-form-page .aka_group_header {
   margin: 16px 0 12px;
   padding: 12px 16px;
@@ -2242,6 +2920,8 @@ button:hover,
 .clinexia-form-page .table_cell_left,
 .clinexia-form-page .table_cell {
   background: transparent;
+  padding-top: 18px !important;
+  padding-bottom: 18px !important;
 }
 
 .clinexia-form-page .table_cell_left > table,
@@ -2269,6 +2949,11 @@ button:hover,
   font-size: 15px;
   font-weight: 700;
   line-height: 1.45;
+}
+
+.clinexia-form-page .aka_text_block,
+.clinexia-form-page .aka_ques_block {
+  padding-top: 2px;
 }
 
 .clinexia-form-page .aka_text_block br,
@@ -2326,10 +3011,289 @@ button:hover,
   border-radius: 10px;
 }
 
+.clinexia-tour-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  padding: 10px 16px;
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.clinexia-tour-trigger:hover {
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.14);
+  transform: translateY(-1px);
+}
+
+.clinexia-tour-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.44);
+  z-index: 9997;
+}
+
+.clinexia-tour-tooltip {
+  position: fixed;
+  width: min(320px, calc(100vw - 32px));
+  z-index: 9999;
+}
+
+.clinexia-tour-tooltip[hidden],
+.clinexia-tour-overlay[hidden] {
+  display: none;
+}
+
+.clinexia-tour-tooltip-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+}
+
+.clinexia-tour-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.clinexia-tour-title {
+  font-size: 20px;
+  line-height: 1.15;
+  color: #0f172a;
+}
+
+.clinexia-tour-copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #475569;
+}
+
+.clinexia-tour-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.clinexia-tour-skip,
+.clinexia-tour-next {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clinexia-tour-skip {
+  background: transparent;
+  color: #64748b;
+}
+
+.clinexia-tour-next {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
+}
+
+.clinexia-tour-target-active {
+  position: relative !important;
+  z-index: 9998 !important;
+  border-radius: 16px;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.82), 0 0 0 8px rgba(37, 99, 235, 0.28), 0 18px 34px rgba(15, 23, 42, 0.24);
+}
+
+.clinexia-tour-target-active.clinexia-dashboard-hero,
+.clinexia-tour-target-active.clinexia-visits-shell {
+  border-radius: 24px;
+}
+
+.clinexia-update-patient-shell {
+  width: min(760px, calc(100% - 32px));
+  margin: 24px auto 48px;
+  display: grid;
+  gap: 20px;
+}
+
+.clinexia-update-patient-form {
+  display: grid;
+  gap: 20px;
+}
+
+.clinexia-update-card .box_T,
+.clinexia-update-card .box_L,
+.clinexia-update-card .box_R,
+.clinexia-update-card .box_B,
+.clinexia-update-card .box_TL,
+.clinexia-update-card .box_TR,
+.clinexia-update-card .box_BL,
+.clinexia-update-card .box_BR {
+  background: transparent;
+}
+
+.clinexia-update-card .tablebox_center,
+.clinexia-update-card .textbox_center {
+  padding: 28px 30px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.clinexia-update-fields,
+.clinexia-update-summary-table,
+.clinexia-update-groups,
+.clinexia-update-group-list {
+  width: 100%;
+}
+
+.clinexia-update-fields > tbody > tr,
+.clinexia-update-summary-table > tbody > tr {
+  display: grid;
+  grid-template-columns: minmax(150px, 200px) minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding: 0 0 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.clinexia-update-fields.is-readonly > tbody > tr,
+.clinexia-update-summary-table > tbody > tr {
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+}
+
+.clinexia-update-fields > tbody > tr:last-child,
+.clinexia-update-summary-table > tbody > tr:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.clinexia-update-patient-page td.formlabel,
+.clinexia-update-patient-page td.table_header_column,
+.clinexia-update-patient-confirm td.table_header_column {
+  display: block;
+  padding: 0;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+}
+
+.clinexia-update-patient-page td.formlabel + td,
+.clinexia-update-patient-page td.table_cell,
+.clinexia-update-patient-confirm td.table_cell {
+  padding: 0;
+  background: transparent;
+}
+
+.clinexia-update-patient-page .formfieldXL_BG,
+.clinexia-update-patient-page .formfieldM_BG,
+.clinexia-update-patient-page .formfieldM_BG_noMargin {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.clinexia-update-patient-page .formfieldXL,
+.clinexia-update-patient-page .formfieldM,
+.clinexia-update-patient-page input[type="text"],
+.clinexia-update-patient-page select,
+.clinexia-update-patient-page textarea {
+  min-height: 48px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.clinexia-update-patient-page input[type="text"]:focus,
+.clinexia-update-patient-page select:focus,
+.clinexia-update-patient-page textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+.clinexia-update-patient-page input[type="radio"] {
+  width: 20px;
+  height: 20px;
+}
+
+.clinexia-update-required {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.clinexia-update-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 26px;
+}
+
+.clinexia-update-group-list > tbody {
+  display: grid;
+  gap: 16px;
+}
+
+.clinexia-update-group-list > tbody > tr {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.clinexia-update-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.clinexia-update-primary {
+  min-width: 160px;
+}
+
+.clinexia-update-secondary {
+  min-width: 132px;
+}
+
 @media (max-width: 900px) {
   .clinexia-form-page-shell {
     width: min(100%, calc(100% - 24px));
     margin: 18px auto 32px;
+  }
+
+  .clinexia-visit-status-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .clinexia-feedback-strip-form {
+    grid-template-columns: 1fr;
   }
 
   .clinexia-form-hero,
@@ -2349,9 +3313,57 @@ button:hover,
     padding: 22px 18px;
   }
 
+  .clinexia-update-patient-shell {
+    width: min(100%, calc(100% - 20px));
+    margin: 18px auto 36px;
+  }
+
+  .clinexia-update-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .clinexia-update-card .tablebox_center,
+  .clinexia-update-card .textbox_center {
+    padding: 22px 18px;
+  }
+
+  .clinexia-update-fields > tbody > tr,
+  .clinexia-update-summary-table > tbody > tr,
+  .clinexia-update-group-list > tbody > tr {
+    grid-template-columns: 1fr;
+  }
+
+  .clinexia-update-inline-actions {
+    padding-top: 0;
+  }
+
   .clinexia-form-page .aka_ques_block,
   .clinexia-form-page .aka_text_block {
     min-width: 0;
+    width: 100%;
+  }
+
+  .clinexia-visits-action-cell {
+    width: auto;
+  }
+
+  .clinexia-visits-action-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .clinexia-tour-trigger {
+    width: 100%;
+  }
+
+  .clinexia-tour-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .clinexia-tour-skip,
+  .clinexia-tour-next {
     width: 100%;
   }
 }

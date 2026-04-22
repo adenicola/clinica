@@ -47,19 +47,31 @@
 
 <jsp:useBean scope="session" id="studySub" class="org.akaza.openclinica.bean.managestudy.StudySubjectBean"/>
 
-<h1><span class="title_manage">
-<fmt:message key="confirm_study_subject_updates" bundle="${resword}"/>
-</span></h1>
+<div class="clinexia-update-patient-shell clinexia-update-patient-confirm">
+<section class="clinexia-form-hero clinexia-update-patient-hero">
+    <div class="clinexia-form-hero-copy">
+        <span class="clinexia-section-kicker">Patient</span>
+        <h1>Review Patient Changes</h1>
+        <p>Confirm the updated patient profile before saving. After save, Clinexia returns you to Patient detail with a success message.</p>
+    </div>
+    <div class="clinexia-form-hero-meta">
+        <div class="clinexia-form-status-panel">
+            <span class="clinexia-feedback-kicker">Ready to save</span>
+            <strong><c:out value="${studySub.label}"/></strong>
+            <span>Review the details below and confirm when you are ready.</span>
+        </div>
+    </div>
+</section>
 
-<form action="UpdateStudySubject" method="post">
+<form action="UpdateStudySubject" method="post" class="clinexia-update-patient-form">
 <input type="hidden" name="action" value="submit">
 <input type="hidden" name="id" value="<c:out value="${studySub.id}"/>">
- <div style="width: 600px">
+ <div class="clinexia-update-card">
 <div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
 
 <div class="tablebox_center">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-  <tr valign="bottom"><td class="table_header_column"><fmt:message key="study_subject_ID" bundle="${resword}"/>:</td><td class="table_cell"><c:out value="${studySub.label}"/></td></tr>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="clinexia-update-summary-table">
+  <tr valign="bottom"><td class="table_header_column">Patient ID:</td><td class="table_cell"><c:out value="${studySub.label}"/></td></tr>
   <tr valign="bottom"><td class="table_header_column"><fmt:message key="secondary_ID" bundle="${resword}"/>:</td><td class="table_cell"><c:out value="${studySub.secondaryLabel}"/>&nbsp;
   </td></tr>
   <tr valign="bottom"><td class="table_header_column"><fmt:message key="enrollment_date" bundle="${resword}"/>:</td>
@@ -79,11 +91,11 @@
 </div>
 <c:if test="${(!empty groups)}">
 <br>
-<div style="width: 600px">
+<div class="clinexia-update-card">
 <div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
 
 <div class="textbox_center">
-<table border="0" cellpadding="0">
+<table border="0" cellpadding="0" class="clinexia-update-summary-table">
 
   <tr valign="top">
 	<td class="table_header_column"><fmt:message key="subject_group_class" bundle="${resword}"/>:
@@ -112,7 +124,10 @@
 
 </div>
 </c:if>
- <input type="submit" name="Submit" value="<fmt:message key="submit" bundle="${resword}"/>" class="button_medium">
-<br>
+<div class="clinexia-update-actions">
+ <input type="submit" name="Submit" value="Confirm" class="button_long clinexia-update-primary">
+ <input type="button" onclick="confirmCancel('ViewStudySubject?id=<c:out value="${studySub.id}"/>');" name="cancel" value="Cancel" class="button_medium clinexia-secondary-button clinexia-update-secondary">
+</div>
 </form>
+</div>
 <jsp:include page="../include/footer.jsp"/>

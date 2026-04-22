@@ -63,9 +63,9 @@
 
 <div class="clinexia-dashboard-page">
     <section class="card clinexia-dashboard-hero">
-        <div>
+        <div class="clinexia-dashboard-hero-copy">
             <span class="clinexia-page-eyebrow">Clinexia Dashboard</span>
-            <h1 class="clinexia-page-title">Estudio Actual</h1>
+            <h1 class="clinexia-page-title">Overview del estudio</h1>
             <p class="clinexia-page-subtitle">
                 <c:choose>
                     <c:when test='${study.parentStudyId > 0}'>
@@ -78,38 +78,75 @@
                 <span class="clinexia-page-separator">-</span>
                 <c:out value="${study.identifier}"/>
             </p>
+            <p class="clinexia-page-summary">Seguimiento de pacientes, visitas y alertas en una sola pantalla.</p>
+            <button type="button" class="clinexia-tour-trigger" onclick="startClinexiaOnboarding(true);">Take tour</button>
         </div>
         <div class="clinexia-study-chip">
-            <span class="clinexia-study-chip-label">Rol activo</span>
+            <span class="clinexia-study-chip-label">Sesion activa</span>
             <strong><c:out value="${userRole.role.description}" /></strong>
         </div>
     </section>
 
     <section class="clinexia-dashboard-grid clinexia-metrics-grid">
-        <article class="card clinexia-metric-card">
+        <article class="card clinexia-metric-card clinexia-metric-card-featured">
             <span class="clinexia-metric-label">Pacientes Enrolados</span>
             <strong class="clinexia-metric-value" id="metricEnrolled">--</strong>
-            <span class="clinexia-metric-subtitle" id="metricEnrolledSub">Sincronizado desde el resumen del estudio</span>
+            <span class="clinexia-metric-subtitle" id="metricEnrolledSub">Listos para seguimiento clinico</span>
         </article>
 
-        <article class="card clinexia-metric-card clinexia-progress-card">
+        <article class="card clinexia-metric-card clinexia-progress-card clinexia-metric-card-featured">
             <div>
                 <span class="clinexia-metric-label">Progreso del Estudio</span>
                 <strong class="clinexia-metric-value" id="metricProgress">--</strong>
-                <span class="clinexia-metric-subtitle">Estado operativo general</span>
+                <span class="clinexia-metric-subtitle" id="metricProgressSub">Carga clinica completada</span>
             </div>
             <div class="clinexia-progress-ring" id="metricProgressRing">
                 <span>CSS</span>
             </div>
         </article>
 
-        <article class="card clinexia-metric-card clinexia-alert-card ${assignedDiscrepancies > 5 ? 'is-high' : assignedDiscrepancies > 0 ? 'is-medium' : 'is-low'}">
+        <article class="card clinexia-metric-card clinexia-alert-card clinexia-metric-card-featured ${assignedDiscrepancies > 5 ? 'is-high' : assignedDiscrepancies > 0 ? 'is-medium' : 'is-low'}">
             <span class="clinexia-metric-label">Alertas</span>
             <strong class="clinexia-metric-value" id="metricAlerts" data-count="${assignedDiscrepancies}">${assignedDiscrepancies}</strong>
-            <a class="clinexia-metric-subtitle" href="ViewNotes?module=submit&listNotes_f_discrepancyNoteBean.user=<c:out value='${userBean.name}' />">
-                Ver notas asignadas y discrepancias
-            </a>
+            <span class="clinexia-metric-subtitle" id="metricAlertsSub">Requieren seguimiento operativo</span>
+            <a class="clinexia-metric-link" href="ViewNotes?module=submit&listNotes_f_discrepancyNoteBean.user=<c:out value='${userBean.name}' />">Ver alertas activas</a>
         </article>
+    </section>
+
+    <section class="card clinexia-task-card" id="clinexia-task-panel">
+        <div class="clinexia-panel-head">
+            <div>
+                <h2>Acciones principales</h2>
+                <p>Entradas directas para mostrar el flujo del producto en segundos.</p>
+            </div>
+        </div>
+        <div class="clinexia-cta-grid">
+            <a class="clinexia-cta-card" href="${pageContext.request.contextPath}/ListStudySubjects">
+                <span class="clinexia-cta-eyebrow">Patients</span>
+                <strong>View Patients</strong>
+                <span>Accede al directorio y revisa estado, progreso y visitas.</span>
+            </a>
+            <c:if test="${!userRole.monitor}">
+                <a class="clinexia-cta-card clinexia-cta-card-primary" href="${pageContext.request.contextPath}/AddNewSubject">
+                    <span class="clinexia-cta-eyebrow">Enrollment</span>
+                    <strong>Add Patient</strong>
+                    <span>Inicia una nueva alta con el flujo simplificado de Clinexia.</span>
+                </a>
+            </c:if>
+            <a class="clinexia-cta-card" id="clinexia-tour-visits-link" href="${pageContext.request.contextPath}/ViewStudyEvents">
+                <span class="clinexia-cta-eyebrow">Visits</span>
+                <strong>View Visits</strong>
+                <span>Abre el seguimiento de visitas y formularios del estudio.</span>
+            </a>
+        </div>
+        <div class="clinexia-quick-actions">
+            <a href="${pageContext.request.contextPath}/MainMenu">Dashboard</a>
+            <a href="${pageContext.request.contextPath}/ViewNotes?module=submit">Alerts</a>
+            <a href="${pageContext.request.contextPath}/StudyAuditLog">Audit Log</a>
+            <c:if test="${userRole.director || userRole.coordinator || userBean.sysAdmin}">
+                <a href="${pageContext.request.contextPath}/AdminSystem">Admin</a>
+            </c:if>
+        </div>
     </section>
 
     <section class="clinexia-dashboard-grid clinexia-panel-grid">
@@ -117,8 +154,8 @@
             <div class="card clinexia-panel-card clinexia-panel-wide" id="findSubjectsPanel">
                 <div class="clinexia-panel-head">
                     <div>
-                        <h2>Study Subjects</h2>
-                        <p>Busqueda operativa y acceso rapido a sujetos del estudio.</p>
+                        <h2>Patients</h2>
+                        <p>Busqueda rapida y acceso directo al directorio de pacientes.</p>
                     </div>
                 </div>
                 <div id="findSubjectsDiv">
@@ -175,7 +212,7 @@
                 <div class="clinexia-panel-head">
                     <div>
                         <h2>Sites</h2>
-                        <p>Distribucion operativa y cobertura del estudio.</p>
+                        <p>Cobertura activa y distribucion operativa del estudio.</p>
                     </div>
                 </div>
                 <form action="${pageContext.request.contextPath}/MainMenu">
@@ -187,7 +224,7 @@
                 <div class="clinexia-panel-head">
                     <div>
                         <h2>Progreso</h2>
-                        <p>Resumen visual del estado general del estudio.</p>
+                        <p>Avance general de la operacion clinica.</p>
                     </div>
                 </div>
                 <form action="${pageContext.request.contextPath}/MainMenu">
@@ -198,8 +235,8 @@
             <div class="card clinexia-panel-card" id="subjectEventStatusPanel">
                 <div class="clinexia-panel-head">
                     <div>
-                        <h2>Eventos</h2>
-                        <p>Estado de eventos y seguimiento clinico.</p>
+                        <h2>Visits</h2>
+                        <p>Estado de visitas y seguimiento operativo.</p>
                     </div>
                 </div>
                 <form action="${pageContext.request.contextPath}/MainMenu">
@@ -211,7 +248,7 @@
                 <div class="clinexia-panel-head">
                     <div>
                         <h2>Pacientes</h2>
-                        <p>Actividad de sujetos y progreso de enrolamiento.</p>
+                        <p>Actividad de pacientes y avance de enrolamiento.</p>
                     </div>
                 </div>
                 <form action="${pageContext.request.contextPath}/MainMenu">
@@ -282,21 +319,6 @@
         </c:if>
     </section>
 
-    <section class="card clinexia-task-card" id="clinexia-task-panel">
-        <div class="clinexia-panel-head">
-            <div>
-                <h2>Quick Actions</h2>
-                <p>Accesos rapidos para navegar el estudio sin perder la UI actual.</p>
-            </div>
-        </div>
-        <div class="clinexia-quick-actions">
-            <a href="${pageContext.request.contextPath}/MainMenu">Dashboard</a>
-            <a href="${pageContext.request.contextPath}/ListStudySubjects">Study Subjects</a>
-            <a href="${pageContext.request.contextPath}/ViewNotes?module=submit">Notes &amp; Discrepancies</a>
-            <a href="${pageContext.request.contextPath}/StudyAuditLog">Study Audit Log</a>
-            <a href="${pageContext.request.contextPath}/AdminSystem">Admin</a>
-        </div>
-    </section>
 </div>
 
 <script type="text/javascript">
@@ -319,8 +341,10 @@
         var metricEnrolled = document.getElementById("metricEnrolled");
         var metricEnrolledSub = document.getElementById("metricEnrolledSub");
         var metricProgress = document.getElementById("metricProgress");
+        var metricProgressSub = document.getElementById("metricProgressSub");
         var metricProgressRing = document.getElementById("metricProgressRing");
         var metricAlerts = document.getElementById("metricAlerts");
+        var metricAlertsSub = document.getElementById("metricAlertsSub");
 
         var enrolled = extractFirstNumber(getText("studySubjectStatusPanel")) ||
             extractFirstNumber(getText("findSubjectsPanel")) ||
@@ -331,7 +355,7 @@
 
         var siteCount = extractFirstNumber(getText("studySiteStatisticsPanel"));
         if (siteCount && metricEnrolledSub) {
-            metricEnrolledSub.textContent = "+" + siteCount + " sitios activos";
+            metricEnrolledSub.textContent = siteCount + " sitios activos";
         }
 
         var progress = extractPercent(getText("studyStatisticsPanel")) ||
@@ -340,12 +364,22 @@
             metricProgress.textContent = progress + "%";
             metricProgressRing.style.setProperty("--progress", progress + "%");
             metricProgressRing.querySelector("span").textContent = progress + "%";
+            if (metricProgressSub) {
+                metricProgressSub.textContent = progress >= 80 ? "Operacion en ritmo" : "Seguimiento en curso";
+            }
         }
 
         if (metricAlerts) {
             var alertCount = parseInt(metricAlerts.getAttribute("data-count"), 10) || 0;
-            if (alertCount > 0) {
-                metricAlerts.textContent = alertCount;
+            metricAlerts.textContent = alertCount;
+            if (metricAlertsSub) {
+                if (alertCount > 5) {
+                    metricAlertsSub.textContent = "Prioridad alta para el equipo";
+                } else if (alertCount > 0) {
+                    metricAlertsSub.textContent = "Pendientes para revisar hoy";
+                } else {
+                    metricAlertsSub.textContent = "Sin bloqueos operativos";
+                }
             }
         }
     })();

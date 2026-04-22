@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <fmt:setBundle basename="org.akaza.openclinica.i18n.format" var="resformat"/>
 <fmt:setBundle basename="org.akaza.openclinica.i18n.notes" var="restext"/>
@@ -70,7 +71,7 @@
 
 <h1>
     <div class="title_manage">
-        <fmt:message key="view_all_events_in" bundle="${resword}"/> <c:out value="${study.name}"/>
+        Visit Control <span class="clinexia-page-separator">/</span> <c:out value="${study.name}"/>
         <a href="javascript:openDocWindow('ViewStudyEvents?print=yes&<c:out value="${queryUrl}"/>')"
            onMouseDown="javascript:setImage('bt_Print0','images/bt_Print_d.gif');"
            onMouseUp="javascript:setImage('bt_Print0','images/bt_Print.gif');">
@@ -78,6 +79,127 @@
         </a>
     </div>
 </h1>
+
+<div class="clinexia-visits-shell">
+    <section class="clinexia-patient-card clinexia-visits-card">
+        <div class="clinexia-patient-card-header">
+            <div>
+                <span class="clinexia-section-kicker">Study status</span>
+                <h2>Quick visit control</h2>
+                <p>Review each patient visit, filter by status or date, and spot progress at a glance.</p>
+            </div>
+        </div>
+
+        <div class="clinexia-visits-toolbar">
+            <div class="clinexia-filter-field">
+                <label for="clinexiaVisitStatusFilter">Status</label>
+                <select id="clinexiaVisitStatusFilter">
+                    <option value="">All statuses</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="in progress">In progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="clinexia-filter-field">
+                <label for="clinexiaVisitDateFilter">Date</label>
+                <input type="date" id="clinexiaVisitDateFilter" />
+            </div>
+        </div>
+
+        <div class="clinexia-patients-summary">
+            <span id="clinexiaVisitCount">0</span>
+            <span>Visits currently visible</span>
+        </div>
+
+        <div class="clinexia-visit-status-overview">
+            <div class="clinexia-visit-status-card">
+                <span class="clinexia-visit-status-label">Scheduled</span>
+                <strong id="clinexiaVisitScheduledCount">0</strong>
+            </div>
+            <div class="clinexia-visit-status-card">
+                <span class="clinexia-visit-status-label">In Progress</span>
+                <strong id="clinexiaVisitInProgressCount">0</strong>
+            </div>
+            <div class="clinexia-visit-status-card">
+                <span class="clinexia-visit-status-label">Completed</span>
+                <strong id="clinexiaVisitCompletedCount">0</strong>
+            </div>
+        </div>
+
+        <div class="clinexia-patients-table-wrap">
+            <table class="clinexia-patients-table clinexia-visits-table">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Visit</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="clinexiaVisitTableBody">
+                    <c:forEach var="eventView" items="${allEvents}">
+                        <c:forEach var="row" items="${eventView.studyEventTable.rows}">
+                            <c:set var="visitStatusToken" value="${fn:toLowerCase(row.bean.subjectEventStatus.name)}" />
+                            <c:set var="visitStateLabel" value="Scheduled" />
+                            <c:set var="visitStateClass" value="clinexia-status-badge-visit-scheduled" />
+                            <c:set var="visitActionLabel" value="Start Visit" />
+                            <c:if test="${fn:contains(visitStatusToken, 'completed') || fn:contains(visitStatusToken, 'signed') || fn:contains(visitStatusToken, 'stopped')}">
+                                <c:set var="visitStateLabel" value="Completed" />
+                                <c:set var="visitStateClass" value="clinexia-status-badge-visit-completed" />
+                                <c:set var="visitActionLabel" value="Review" />
+                            </c:if>
+                            <c:if test="${fn:contains(visitStatusToken, 'data entry started') || fn:contains(visitStatusToken, 'started') || fn:contains(visitStatusToken, 'in progress')}">
+                                <c:set var="visitStateLabel" value="In progress" />
+                                <c:set var="visitStateClass" value="clinexia-status-badge-visit-progress" />
+                                <c:set var="visitActionLabel" value="Continue" />
+                            </c:if>
+                            <tr class="clinexia-visits-row"
+                                tabindex="0"
+                                role="link"
+                                data-url="EnterDataForStudyEvent?eventId=<c:out value='${row.bean.id}'/>"
+                                data-status="<c:out value='${fn:toLowerCase(visitStateLabel)}'/>"
+                                data-date="<c:if test='${row.bean.dateStarted != null}'><fmt:formatDate value='${row.bean.dateStarted}' pattern='yyyy-MM-dd'/></c:if>">
+                                <td>
+                                    <div class="clinexia-patient-id">
+                                        <a href="ViewStudySubject?id=<c:out value='${row.bean.studySubjectId}'/>&module=<c:out value='${module}'/>"><c:out value="${row.bean.studySubjectLabel}"/></a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="clinexia-visits-visit-name"><c:out value="${eventView.definition.name}"/></div>
+                                    <div class="clinexia-patient-meta">
+                                        <c:choose>
+                                            <c:when test="${row.bean.dateStarted != null}">
+                                                <fmt:formatDate value="${row.bean.dateStarted}" pattern="${dteFormat}"/>
+                                            </c:when>
+                                            <c:otherwise>No date set</c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="clinexia-status-badge ${visitStateClass}"><c:out value="${visitStateLabel}"/></span>
+                                </td>
+                                <td class="clinexia-visits-action-cell">
+                                    <a class="clinexia-table-action clinexia-table-action-open clinexia-visits-action-button"
+                                       href="EnterDataForStudyEvent?eventId=<c:out value='${row.bean.id}'/>">
+                                        <c:out value="${visitActionLabel}"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="clinexiaVisitEmptyState" class="clinexia-patient-empty" hidden>
+            <div class="clinexia-patient-empty-title">No visits match these filters</div>
+            <p class="clinexia-patient-empty-copy">Adjust the status or date filter to see more study activity.</p>
+        </div>
+    </section>
+
+    <details class="clinexia-legacy-panel clinexia-visits-legacy-panel">
+        <summary>Detailed operational view</summary>
+        <p class="clinexia-form-note">Open the legacy breakdown only when you need definition-level filters and the original grouped event view.</p>
 
 
 <div style="width: 640px">
@@ -328,4 +450,112 @@
 </table>
 
 <!-- END WORKFLOW BOX -->
+</details>
+</div>
 <jsp:include page="../include/footer.jsp"/>
+<script type="text/javascript">
+function clinexiaInitVisitsQuickView() {
+    var statusFilter = document.getElementById('clinexiaVisitStatusFilter');
+    var dateFilter = document.getElementById('clinexiaVisitDateFilter');
+    var rows = document.querySelectorAll('.clinexia-visits-row');
+    var actionButtons = document.querySelectorAll('.clinexia-visits-action-button');
+    var countNode = document.getElementById('clinexiaVisitCount');
+    var emptyState = document.getElementById('clinexiaVisitEmptyState');
+    var scheduledCountNode = document.getElementById('clinexiaVisitScheduledCount');
+    var inProgressCountNode = document.getElementById('clinexiaVisitInProgressCount');
+    var completedCountNode = document.getElementById('clinexiaVisitCompletedCount');
+
+    function updateRows() {
+        var visible = 0;
+        var scheduledVisible = 0;
+        var inProgressVisible = 0;
+        var completedVisible = 0;
+        var selectedStatus = statusFilter ? statusFilter.value.toLowerCase() : '';
+        var selectedDate = dateFilter ? dateFilter.value : '';
+
+        for (var i = 0; i < rows.length; i += 1) {
+            var row = rows[i];
+            var rowStatus = (row.getAttribute('data-status') || '').toLowerCase();
+            var rowDate = row.getAttribute('data-date') || '';
+            var matchesStatus = !selectedStatus || rowStatus === selectedStatus;
+            var matchesDate = !selectedDate || rowDate === selectedDate;
+            var show = matchesStatus && matchesDate;
+            row.style.display = show ? '' : 'none';
+            if (show) {
+                visible += 1;
+                if (rowStatus === 'scheduled') {
+                    scheduledVisible += 1;
+                } else if (rowStatus === 'in progress') {
+                    inProgressVisible += 1;
+                } else if (rowStatus === 'completed') {
+                    completedVisible += 1;
+                }
+            }
+        }
+
+        if (countNode) {
+            countNode.textContent = visible;
+        }
+        if (scheduledCountNode) {
+            scheduledCountNode.textContent = scheduledVisible;
+        }
+        if (inProgressCountNode) {
+            inProgressCountNode.textContent = inProgressVisible;
+        }
+        if (completedCountNode) {
+            completedCountNode.textContent = completedVisible;
+        }
+        if (emptyState) {
+            emptyState.hidden = visible !== 0;
+        }
+    }
+
+    function openRow(event) {
+        var target = event.target;
+        while (target && target !== this) {
+            if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'LABEL') {
+                return;
+            }
+            target = target.parentNode;
+        }
+        var url = this.getAttribute('data-url');
+        if (url) {
+            window.location = url;
+        }
+    }
+
+    function handleKey(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openRow.call(this, event);
+        }
+    }
+
+    for (var i = 0; i < rows.length; i += 1) {
+        rows[i].addEventListener('click', openRow);
+        rows[i].addEventListener('keydown', handleKey);
+    }
+
+    for (var j = 0; j < actionButtons.length; j += 1) {
+        actionButtons[j].addEventListener('click', function(event) {
+            var href = this.getAttribute('href');
+            event.stopPropagation();
+            event.preventDefault();
+            if (href) {
+                window.location = href;
+            }
+        });
+    }
+
+    if (statusFilter) {
+        statusFilter.addEventListener('change', updateRows);
+    }
+    if (dateFilter) {
+        dateFilter.addEventListener('input', updateRows);
+    }
+
+    updateRows();
+}
+
+clinexiaInitVisitsQuickView();
+</script>

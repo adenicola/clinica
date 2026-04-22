@@ -50,52 +50,55 @@
 <jsp:useBean scope="session" id="studySub" class="org.akaza.openclinica.bean.managestudy.StudySubjectBean"/>
 <jsp:useBean scope="session" id="enrollDateStr" class="java.lang.String"/>
 
-<body class="aka_bodywidth" onload=
+<body class="aka_bodywidth clinexia-form-page clinexia-update-patient-page" onload=
   "if(! detectFirefoxWindows(navigator.userAgent)){document.getElementById('centralContainer').style.display='none';new Effect.Appear('centralContainer', {duration:1});};
         <c:if test='${popUpURL != ""}'>
 		openDNoteWindow('<c:out value="${popUpURL}" />');</c:if>">
 
-<c:choose>
-<c:when test="${userBean.sysAdmin || userBean.techAdmin || userRole.manageStudy}">
-	<h1><span class="title_manage">
-	<fmt:message key="update_study_subject_details" bundle="${resword}"/>
-	</span></h1>
-</c:when>
-<c:otherwise>
-	<h1><span class="title_manage">
-	<fmt:message key="assign_subject_to_group" bundle="${resworkflow}"/>
-	</span></h1>
-</c:otherwise>
-</c:choose>
+<div class="clinexia-update-patient-shell">
+<section class="clinexia-form-hero clinexia-update-patient-hero">
+    <div class="clinexia-form-hero-copy">
+        <span class="clinexia-section-kicker">Patient</span>
+        <h1>Update Patient</h1>
+        <p>Keep the patient profile and study assignments aligned with the current workflow. Saving returns you to Patient detail.</p>
+    </div>
+    <div class="clinexia-form-hero-meta">
+        <div class="clinexia-form-status-panel">
+            <span class="clinexia-feedback-kicker">Editing</span>
+            <strong><c:out value="${studySub.label}"/></strong>
+            <span>Review identifiers, enrollment date and study group assignments before confirming.</span>
+        </div>
+    </div>
+</section>
 
-<form action="UpdateStudySubject" method="post">
+<form action="UpdateStudySubject" method="post" class="clinexia-update-patient-form">
 <input type="hidden" name="action" value="confirm">
 <input type="hidden" name="id" value="<c:out value="${studySub.id}"/>">
 <c:choose>
 <c:when test="${userBean.techAdmin || userBean.sysAdmin || userRole.manageStudy || userRole.investigator 
     || (study.parentStudyId > 0 && userRole.researchAssistant ||study.parentStudyId > 0 && userRole.researchAssistant2)}">
-	 <div style="width: 550px">
+	 <div class="clinexia-update-card">
 	<div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
 
 	<div class="tablebox_center">
-	<table border="0" cellpadding="0" cellspacing="0">
+	<table border="0" cellpadding="0" cellspacing="0" class="clinexia-update-fields">
 	  <tr valign="top">
 	  <td class="formlabel">
 	  	<fmt:message key="study_subject_ID" bundle="${resword}"/>:
 	  </td>
 	  <td>
 	  	<div class="formfieldXL_BG">
-	  	<input type="text" name="label" value="<c:out value="${studySub.label}"/>" class="formfieldXL">
+	  	<input type="text" name="label" value="<c:out value="${studySub.label}"/>" class="formfieldXL" placeholder="Enter patient ID">
 	  	</div>
 	  	<br>
 	  	<jsp:include page="../showMessage.jsp"><jsp:param name="key" value="label"/></jsp:include>
 	  </td>
-	  <td>
-	  	<fmt:message key="field_required" bundle="${resword}"/>
+	  <td class="clinexia-update-required">
+	  	Required
 	  </td>
 	  </tr>
 	  <tr valign="top">
-	  <td class="formlabel"><fmt:message key="secondary_ID" bundle="${resword}"/>:</td><td><div class="formfieldXL_BG"><input type="text" name="secondaryLabel" value="<c:out value="${studySub.secondaryLabel}"/>" class="formfieldXL"></div>
+	  <td class="formlabel"><fmt:message key="secondary_ID" bundle="${resword}"/>:</td><td><div class="formfieldXL_BG"><input type="text" name="secondaryLabel" value="<c:out value="${studySub.secondaryLabel}"/>" class="formfieldXL" placeholder="Optional secondary reference"></div>
 	  	<td><jsp:include page="../showMessage.jsp"><jsp:param name="key" value="secondaryLabel"/></jsp:include></td>	  
 	  </td>
 	  </tr>
@@ -104,9 +107,9 @@
 	  <td>
 	  <div class="formfieldXL_BG">
 
-	  <input type="text" name="enrollmentDate" value="<c:out value="${enrollDateStr}" />" class="formfieldXL" id="enrollmentDateField"></div>
+	  <input type="text" name="enrollmentDate" value="<c:out value="${enrollDateStr}" />" class="formfieldXL" id="enrollmentDateField" placeholder="Select enrollment date"></div>
 	  <br><jsp:include page="../showMessage.jsp"><jsp:param name="key" value="enrollmentDate"/></jsp:include></td>
-	  <td valign="top">
+	  <td valign="top" class="clinexia-update-inline-actions">
 	  <A HREF="#" >
 	      <img src="images/bt_Calendar.gif" alt="<fmt:message key="show_calendar" bundle="${resword}"/>" title="<fmt:message key="show_calendar" bundle="${resword}"/>" border="0" id="enrollmentDateTrigger"/>
 	      <script type="text/javascript">
@@ -124,11 +127,11 @@
 	</div>
 </c:when>
 <c:otherwise>
-	<div style="width: 300px">
+	<div class="clinexia-update-card is-readonly">
 	<div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
 
 	<div class="tablebox_center">
-	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%" class="clinexia-update-fields is-readonly">
 	  <tr valign="top"><td class="table_header_column"><fmt:message key="label" bundle="${resword}"/>:</td><td class="table_cell">
 	  <input type="text" name="label" value="<c:out value="${studySub.label}"/>" disabled="disabled" class="formfieldM">
 	  </td></tr>
@@ -150,17 +153,17 @@
 <br>
 <c:if test="${(!empty groups)}">
 <br>
-<div style="width: 550px">
+<div class="clinexia-update-card">
 <div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL"><div class="box_TR"><div class="box_BL"><div class="box_BR">
 
 <div class="textbox_center">
-<table border="0" cellpadding="0">
+<table border="0" cellpadding="0" class="clinexia-update-groups">
 
   <tr valign="top">
 	<td class="formlabel"><fmt:message key="subject_group_class" bundle="${resword}"/>:
 	<td class="table_cell">
 	<c:set var="count" value="0"/>
-	<table border="0" cellpadding="0">
+	<table border="0" cellpadding="0" class="clinexia-update-group-list">
 	  <c:forEach var="group" items="${groups}">
 	  <tr valign="top">
 	   <td><b><c:out value="${group.name}"/></b></td>
@@ -205,9 +208,12 @@
 </div>
 </c:if>
 <br>
- <input type="submit" name="Submit" value="<fmt:message key="confirm_changes" bundle="${resword}"/>" class="button_long">
- <input type="button" onclick="confirmCancel('ListStudySubjects');"  name="cancel" value="   <fmt:message key="cancel" bundle="${resword}"/>   " class="button_medium"/>
+<div class="clinexia-update-actions">
+ <input type="submit" name="Submit" value="Confirm" class="button_long clinexia-update-primary">
+ <input type="button" onclick="confirmCancel('ViewStudySubject?id=<c:out value="${studySub.id}"/>');"  name="cancel" value="Cancel" class="button_medium clinexia-secondary-button clinexia-update-secondary"/>
+</div>
 </form>
+</div>
 <DIV ID="testdiv1" STYLE="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;"></DIV>
 
 </body>

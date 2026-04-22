@@ -38,24 +38,56 @@
 <c:set var="stage" value="${param.stage}"/>
 <c:set var="formStatusClass" value="clinexia-status-badge-active" />
 <c:set var="formStatusLabel" value="In progress" />
+<c:set var="feedbackToneClass" value="is-info" />
+<c:set var="feedbackHeadline" value="Continue entering data" />
+<c:set var="feedbackCopy" value="Save progress at any time. The visit can be completed from the final section." />
 <c:choose>
     <c:when test="${eventCRF.stage.initialDE_Complete || eventCRF.stage.doubleDE_Complete}">
         <c:set var="formStatusClass" value="clinexia-status-badge-completed" />
         <c:set var="formStatusLabel" value="Completed" />
+        <c:set var="feedbackToneClass" value="is-success" />
+        <c:set var="feedbackHeadline" value="Completed" />
+        <c:set var="feedbackCopy" value="This form was already completed for the current visit." />
     </c:when>
     <c:when test="${eventCRF.stage.locked}">
         <c:set var="formStatusClass" value="clinexia-status-badge-completed" />
         <c:set var="formStatusLabel" value="Locked" />
+        <c:set var="feedbackToneClass" value="is-success" />
+        <c:set var="feedbackHeadline" value="Completed" />
+        <c:set var="feedbackCopy" value="This form is locked and no further changes are expected." />
     </c:when>
     <c:when test="${eventCRF.stage.invalid}">
         <c:set var="formStatusClass" value="clinexia-status-badge-screened" />
         <c:set var="formStatusLabel" value="Needs review" />
+        <c:set var="feedbackToneClass" value="is-warning" />
+        <c:set var="feedbackHeadline" value="Needs review" />
+        <c:set var="feedbackCopy" value="Review highlighted responses before continuing." />
     </c:when>
     <c:when test="${eventCRF.stage.admin_Editing}">
         <c:set var="formStatusClass" value="clinexia-status-badge-screened" />
         <c:set var="formStatusLabel" value="Admin editing" />
+        <c:set var="feedbackToneClass" value="is-warning" />
+        <c:set var="feedbackHeadline" value="Admin editing" />
+        <c:set var="feedbackCopy" value="This form is currently being updated in administrative editing mode." />
     </c:when>
 </c:choose>
+<c:if test="${!empty pageMessages}">
+    <c:set var="feedbackToneClass" value="is-success" />
+    <c:set var="feedbackHeadline" value="Saved" />
+    <c:set var="feedbackCopy" value="Changes were saved successfully. You can continue editing or move to the next step." />
+</c:if>
+<c:if test="${!empty formMessages}">
+    <c:set var="feedbackToneClass" value="is-error" />
+    <c:set var="feedbackHeadline" value="Error" />
+    <c:set var="feedbackCopy" value="Some fields still need attention. Review the highlighted items before saving again." />
+</c:if>
+<c:set var="nextActionToneClass" value="is-info" />
+<c:if test="${section.lastSection}">
+    <c:set var="nextActionToneClass" value="is-warning" />
+</c:if>
+<c:if test="${!empty formMessages}">
+    <c:set var="nextActionToneClass" value="is-error" />
+</c:if>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -199,6 +231,14 @@ margin-top:20px;margin-top:10px;document.getElementById('centralContainer').styl
 <c:set var="studySubjectId" value="${studySubjectId}"/>
 <c:set var="crfListPage" value="${crfListPage}"/>
 <c:set var="crfId" value="${crfId}"/>
+<c:set var="sectionNum" value="0"/>
+<c:forEach var="section" items="${toc.sections}">
+    <c:set var="sectionNum" value="${sectionNum+1}"/>
+</c:forEach>
+<c:set var="sectionProgressPercent" value="0"/>
+<c:if test="${sectionNum > 0}">
+    <fmt:parseNumber var="sectionProgressPercent" integerOnly="true" value="${(tabId * 100) / sectionNum}" />
+</c:if>
 
 <div class="clinexia-form-shell">
 <div class="clinexia-form-card clinexia-form-overview-card">
@@ -206,11 +246,55 @@ margin-top:20px;margin-top:10px;document.getElementById('centralContainer').styl
         <div>
             <span class="clinexia-form-eyebrow">Visit form</span>
             <h2><c:out value="${currentSectionName}" escapeXml="false"/></h2>
-            <p><fmt:message key="enter_note_for_item" bundle="${restext}"/></p>
+            <p>Answer the required questions for this section, then save or continue when you're ready.</p>
         </div>
         <div class="clinexia-form-meta">
             <span id="clinexiaFormSaveState" class="clinexia-feedback-badge is-saved">All changes saved</span>
         </div>
+    </div>
+    <div class="clinexia-form-progress-card">
+        <div class="clinexia-form-progress-copy">
+            <span class="clinexia-feedback-kicker">Section progress</span>
+            <strong>Section <c:out value="${tabId}" /> of <c:out value="${sectionNum}" /></strong>
+            <span>
+                <c:choose>
+                    <c:when test="${section.lastSection}">You're on the final section of this form.</c:when>
+                    <c:otherwise>Complete this section to move smoothly through the visit.</c:otherwise>
+                </c:choose>
+            </span>
+        </div>
+        <div class="clinexia-progress-track clinexia-form-progress-track" aria-hidden="true">
+            <span class="clinexia-progress-bar clinexia-form-progress-bar" style="width: <c:out value='${sectionProgressPercent}'/>%;"></span>
+        </div>
+    </div>
+    <div class="clinexia-feedback-strip clinexia-feedback-strip-form">
+        <article class="clinexia-feedback-tile ${feedbackToneClass}">
+            <span class="clinexia-feedback-kicker">Form feedback</span>
+            <strong><c:out value="${feedbackHeadline}"/></strong>
+            <span><c:out value="${feedbackCopy}"/></span>
+        </article>
+        <article class="clinexia-feedback-tile is-status">
+            <span class="clinexia-feedback-kicker">Form status</span>
+            <strong><c:out value="${formStatusLabel}"/></strong>
+            <span>The current data-entry stage is visible at all times while you work.</span>
+        </article>
+        <article class="clinexia-feedback-tile ${nextActionToneClass}">
+            <span class="clinexia-feedback-kicker">Next action</span>
+            <strong>
+                <c:choose>
+                    <c:when test="${!empty formMessages}">Review highlighted fields</c:when>
+                    <c:when test="${section.lastSection}">Save or complete this visit</c:when>
+                    <c:otherwise>Save and continue to the next section</c:otherwise>
+                </c:choose>
+            </strong>
+            <span>
+                <c:choose>
+                    <c:when test="${!empty formMessages}">Field-level errors stay visible directly next to the affected responses.</c:when>
+                    <c:when test="${section.lastSection}">The final section enables the complete visit action without changing the legacy workflow.</c:when>
+                    <c:otherwise>Use the Save action to keep progress and move through the visit step by step.</c:otherwise>
+                </c:choose>
+            </span>
+        </article>
     </div>
     <c:if test="${!empty pageMessages}">
         <div class="clinexia-form-page-messages">
@@ -223,31 +307,31 @@ margin-top:20px;margin-top:10px;document.getElementById('centralContainer').styl
     <div class="clinexia-form-actions">
         <c:choose>
         <c:when test="${fn:length(fromViewNotes)>0 && !empty viewNotesURL}">
-            <input type="button" onclick="window.location = '<c:out value="${viewNotesURL}"/>'" value="Back" class="button_medium clinexia-secondary-button"/>
+            <input type="button" onclick="window.location = '<c:out value="${viewNotesURL}"/>'" value="Cancel" class="button_medium clinexia-secondary-button"/>
         </c:when>
         <c:otherwise>
         <c:choose>
             <c:when test="${!empty window_location}">
-                <input type="button" onclick="window.location = '<c:out value="${window_location}"/>'" value="Back" class="button_medium clinexia-secondary-button"/>
+                <input type="button" onclick="window.location = '<c:out value="${window_location}"/>'" value="Cancel" class="button_medium clinexia-secondary-button"/>
             </c:when>
             <c:when test="${!empty exitTo}">
                 <c:if test="${exitTo != 'none'}">
-                    <input type="button" onclick="window.location = '<c:out value="${exitTo}"/>'" value="Back" class="button_medium clinexia-secondary-button"/>
+                    <input type="button" onclick="window.location = '<c:out value="${exitTo}"/>'" value="Cancel" class="button_medium clinexia-secondary-button"/>
                 </c:if>
             </c:when>
             <c:otherwise>
                 <c:choose>
                     <c:when test="${crfListPage == 'yes'}">
-                        <input type="button" onclick="window.location = 'ListCRF?&module=';" name="exit" value="Back" class="button_medium clinexia-secondary-button"/>
+                        <input type="button" onclick="window.location = 'ListCRF?&module=';" name="exit" value="Cancel" class="button_medium clinexia-secondary-button"/>
                     </c:when>
                     <c:when test="${studySubjectId > 0}">
-                        <input type="button" onclick="window.location = 'ViewStudySubject?id=<c:out value="${studySubjectId}"/>';" name="exit" value="Back to Patient" class="button_medium clinexia-secondary-button"/>
+                        <input type="button" onclick="window.location = 'ViewStudySubject?id=<c:out value="${studySubjectId}"/>';" name="exit" value="Cancel" class="button_medium clinexia-secondary-button"/>
                     </c:when>
                     <c:when test="${eventId > 0}">
-                        <input type="button" onclick="window.location = 'EnterDataForStudyEvent?eventId=<c:out value="${eventId}"/>';" name="exit" value="Back to Visit" class="button_medium clinexia-secondary-button"/>
+                        <input type="button" onclick="window.location = 'EnterDataForStudyEvent?eventId=<c:out value="${eventId}"/>';" name="exit" value="Cancel" class="button_medium clinexia-secondary-button"/>
                     </c:when>
                     <c:otherwise>
-                        <input type="button" onclick="window.location = 'ViewCRF?crfId=<c:out value="${crfId}"/>';" name="exit" value="Back" class="button_medium clinexia-secondary-button"/>
+                        <input type="button" onclick="window.location = 'ViewCRF?crfId=<c:out value="${crfId}"/>';" name="exit" value="Cancel" class="button_medium clinexia-secondary-button"/>
                     </c:otherwise>
                 </c:choose>
             </c:otherwise>
@@ -260,14 +344,9 @@ margin-top:20px;margin-top:10px;document.getElementById('centralContainer').styl
         </c:if>
     </div>
     <div class="clinexia-form-toolbar-meta">
-        <span class="clinexia-form-hint">The same validation and permissions remain active. Only the presentation has been modernized.</span>
+        <span class="clinexia-form-hint">Save to keep your progress, or cancel to return without breaking the workflow.</span>
     </div>
 </div>
-
-<c:set var="sectionNum" value="0"/>
-<c:forEach var="section" items="${toc.sections}">
-    <c:set var="sectionNum" value="${sectionNum+1}"/>
-</c:forEach>
 
 <%-- removed, tbh 102007 --%>
 <%--
@@ -1036,13 +1115,24 @@ but the custom tag uses that, not this jstl code--%>
 </div>
 <div class="clinexia-form-card clinexia-form-toolbar-card clinexia-form-toolbar-card-bottom">
     <div class="clinexia-form-actions">
+        <c:choose>
+            <c:when test="${!empty exitTo && exitTo != 'none'}">
+                <input type="button" onclick="window.location = '<c:out value="${exitTo}"/>'" value="Cancel" class="button_medium clinexia-secondary-button"/>
+            </c:when>
+            <c:when test="${studySubjectId > 0}">
+                <input type="button" onclick="window.location = 'ViewStudySubject?id=<c:out value="${studySubjectId}"/>';" name="exit" value="Cancel" class="button_medium clinexia-secondary-button"/>
+            </c:when>
+            <c:when test="${eventId > 0}">
+                <input type="button" onclick="window.location = 'EnterDataForStudyEvent?eventId=<c:out value="${eventId}"/>';" name="exit" value="Cancel" class="button_medium clinexia-secondary-button"/>
+            </c:when>
+        </c:choose>
         <button type="submit" name="submittedResume" value="Save" class="button_medium clinexia-primary-submit" onclick="clinexiaClearCompleteIntent();">Save</button>
         <c:if test="${stage != 'adminEdit' && section.lastSection}">
             <button type="submit" name="submittedResume" value="Save" class="button_medium clinexia-complete-submit" onclick="return clinexiaPrepareComplete();">Complete Visit</button>
         </c:if>
     </div>
     <div class="clinexia-form-toolbar-meta">
-        <span class="clinexia-form-hint">Need to continue later? Save to keep the current state exactly as before.</span>
+        <span class="clinexia-form-hint">You're working in section <c:out value="${tabId}" /> of <c:out value="${sectionNum}" />.</span>
     </div>
 </div>
 </div>

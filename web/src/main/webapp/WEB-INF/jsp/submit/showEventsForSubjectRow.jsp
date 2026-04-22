@@ -93,64 +93,51 @@
     <fmt:message key="crf_is_hidden" bundle="${resword}"/>
 </c:set>
 <td class="table_cell_shaded">
-    <c:if test="${! crfIsHidden}">
-    <c:import url="../submit/eventLayer.jsp">
-        <c:param name="colCount" value="1"/>
-        <c:param name="rowCount" value="${eblRowCount+count}"/>
-        <c:param name="eventId" value="${event.studyEvent.id}"/>
-
-        <c:param name="eventStatusName" value="${event.studyEvent.subjectEventStatus.name}"/>
-        <c:param name="eventStatus" value="${event.studyEvent.subjectEventStatus.name}"/>
-        <c:param name="eventName" value="${event.studyEvent.studyEventDefinition.name}"/>
-        <c:param name="subjectId" value="${currRow.bean.studySubject.id}"/>
-        <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-        <c:param name="eventSysStatus" value="${currRow.bean.studySubject.status.name}"/>
-        <c:param name="module" value="${module}"/>
-    </c:import>
-    </c:if>
-    <c:choose>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==1}">
-           <%-- ${crfIsHidden ? altMessage : ''}--%>
-            <img alt="" title="" src="images/icon_Scheduled.gif"  border="0" style="position: relative; left: 7px;">
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==2}">
-            <img alt="" title="" src="images/icon_NotStarted.gif"  border="0" style="position: relative; left: 7px;">
-
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==3}">
-            <img alt="" title="" src="images/icon_InitialDE.gif"  border="0" style="position: relative; left: 7px;">
-
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==4}">
-            <img alt="" title="" src="images/icon_DEcomplete.gif"  border="0" style="position: relative; left: 7px;">
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==5}">
-            <img alt="" title="" src="images/icon_Stopped.gif"  border="0" style="position: relative; left: 7px;">
-
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==6}">
-            <img alt="" title="" src="images/icon_Skipped.gif"  border="0" style="position: relative; left: 7px;">
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==7}">
-            <img alt="" title="" src="images/icon_Locked.gif"  border="0" style="position: relative; left: 7px;">
-
-        </c:when>
-        <c:when test="${event.studyEvent.subjectEventStatus.id==8}">
-
-            <img alt="" title="" src="images/icon_Signed.gif"  border="0" style="position: relative; left: 7px;">
-
-        </c:when>
-
-    </c:choose>
-    </a><img name="ExpandIcon_<c:out value="${currRow.bean.studySubject.label}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount+count}"/>" src="images/icon_blank.gif" width="15" height="15" style="position: relative; left: 8px;">
-
-
+    <div class="clinexia-schedule-cell">
+        <div class="clinexia-schedule-visit">
+            <div class="clinexia-schedule-visit-header">
+                <span class="clinexia-schedule-status
+                    <c:choose>
+                        <c:when test="${event.studyEvent.subjectEventStatus.id == 4 || event.studyEvent.subjectEventStatus.id == 8}">clinexia-schedule-status-completed</c:when>
+                        <c:when test="${event.studyEvent.subjectEventStatus.id == 2}">clinexia-schedule-status-empty</c:when>
+                        <c:when test="${event.studyEvent.subjectEventStatus.id == 5 || event.studyEvent.subjectEventStatus.id == 6 || event.studyEvent.subjectEventStatus.id == 7}">clinexia-schedule-status-warning</c:when>
+                        <c:otherwise>clinexia-schedule-status-active</c:otherwise>
+                    </c:choose>
+                "><c:out value="${event.studyEvent.subjectEventStatus.name}"/></span>
+            </div>
+            <div class="clinexia-schedule-actions">
+                <c:choose>
+                    <c:when test="${event.studyEvent.id > 0}">
+                        <c:choose>
+                            <c:when test="${not empty eventDefCRFs}">
+                                <a class="clinexia-inline-action clinexia-inline-action-main clinexia-inline-action-primary" href="EnterDataForStudyEvent?eventId=<c:out value='${event.studyEvent.id}'/>">Open Form</a>
+                            </c:when>
+                            <c:otherwise>
+                                <a class="clinexia-inline-action clinexia-inline-action-main clinexia-inline-action-primary" href="EnterDataForStudyEvent?eventId=<c:out value='${event.studyEvent.id}'/>">Open Visit</a>
+                            </c:otherwise>
+                        </c:choose>
+                        <div class="clinexia-schedule-secondary-actions">
+                            <c:if test="${not empty eventDefCRFs}">
+                                <a class="clinexia-inline-action" href="EnterDataForStudyEvent?eventId=<c:out value='${event.studyEvent.id}'/>">Open Visit</a>
+                            </c:if>
+                            <c:if test="${empty eventDefCRFs}">
+                                <span class="clinexia-inline-empty">No form assigned</span>
+                            </c:if>
+                            <c:if test="${(userRole.director || userBean.sysAdmin) && study.status.available && event.studyEvent.editable}">
+                                <a class="clinexia-inline-action" href="UpdateStudyEvent?event_id=<c:out value='${event.studyEvent.id}'/>&ss_id=<c:out value='${currRow.bean.studySubject.id}'/>">Edit</a>
+                            </c:if>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="clinexia-inline-empty">No form assigned</span>
+                        <c:if test="${module != 'submit' || !userRole.monitor}">
+                            <a class="clinexia-inline-action clinexia-inline-action-main clinexia-inline-action-primary" href="CreateNewStudyEvent?studySubjectId=<c:out value='${currRow.bean.studySubject.id}'/>&studyEventDefinition=<c:out value='${event.studyEvent.studyEventDefinition.id}'/>">Schedule Visit</a>
+                        </c:if>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+    </div>
 </td>
 <td class="table_cell"><fmt:formatDate value="${event.studyEvent.dateStarted}" pattern="${dteFormat}"/>&nbsp;</td>
 <c:choose>
@@ -161,22 +148,6 @@
         <c:forEach var="edc" items="${eventDefCRFs}">
             <c:if test="${! edc.hidden}">
             <td class="table_cell_shaded">
-                <c:import url="../submit/eventCrfLayer.jsp">
-                    <c:param name="colCount" value="${edcNum}"/>
-                    <c:param name="rowCount" value="${eblRowCount+count}"/>
-                    <c:param name="eventId" value="${event.studyEvent.id}"/>
-                    <c:param name="crfId" value="${0}"/>
-                    <c:param name="crfName" value="${edc.crf.name}"/>
-                    <c:param name="crfVersionId" value="${edc.defaultVersionId}"/>
-                    <c:param name="edcId" value="${edc.id}"/>
-                    <c:param name="subjectId" value="${currRow.bean.studySubject.id}"/>
-                    <%-- create studySubject_subjectId which is subjectId of StudySubjectBean, since "subjectId" has been used in other places -10-18-2007  --%>
-                    <c:param name="studySubject_subjectId" value="${currRow.bean.studySubject.subjectId}"/>
-                    <c:param name="studySubjectId" value="${currRow.bean.studySubject.id}"/>
-                    <c:param name="studySubjectStatusId" value="${currRow.bean.studySubject.status.id}"/>
-                    <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-                    <c:param name="module" value="${module}"/>
-                </c:import>
                 <c:choose>
                     <c:when test="${currRow.bean.studySubject.status.id != 5 && currRow.bean.studySubject.status.id != 7}">
                         <img name="CRFicon_<c:out value="${eblRowCount+count}"/>_<c:out value="${eventCRFNum-1}"/>_<c:out value="${currRow.bean.studySubject.label}"/>" src="images/icon_NotStarted.gif" border="0">
@@ -206,21 +177,6 @@
                 <c:choose>
                     <c:when test="${dec.eventCRF.id > 0}">
                         <%--<c:if test="${! crfIsHidden}">--%>
-                            <c:import url="../submit/eventCrfLayer.jsp">
-                                <c:param name="colCount" value="${crfCount}"/>
-                                <c:param name="rowCount" value="${eblRowCount+count}"/>
-                                <c:param name="eventId" value="${event.studyEvent.id}"/>
-                                <c:param name="crfStatus" value="${dec.stage.name}"/>
-                                <c:param name="crfId" value="${dec.eventCRF.id}"/>
-                                <c:param name="crfName" value="${dec.eventCRF.crf.name}"/>
-                                <c:param name="subjectId" value="${currRow.bean.studySubject.subjectId}"/>
-                                <%-- create studySubject_subjectId which is subjectId of StudySubjectBean, since "subjectId" has been used in other places -10-18-2007  --%>
-                                <c:param name="studySubject_subjectId" value="${currRow.bean.studySubject.subjectId}"/>
-                                <c:param name="studySubjectId" value="${currRow.bean.studySubject.id}"/>
-                                <c:param name="studySubjectStatusId" value="${currRow.bean.studySubject.status.id}"/>
-                                <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-
-                            </c:import>
                      <%--   </c:if>--%>
                         <c:choose>
                             <c:when test="${currRow.bean.studySubject.status.id != 5 && currRow.bean.studySubject.status.id != 7}">
@@ -279,22 +235,6 @@
                                 <c:set var="crfStatusName">Not Started</c:set>
                             </c:otherwise>
                         </c:choose>
-                        <c:import url="../submit/eventCrfLayer.jsp">
-                            <c:param name="colCount" value="${crfCount}"/>
-                            <c:param name="rowCount" value="${eblRowCount+count}"/>
-                            <c:param name="eventId" value="${event.studyEvent.id}"/>
-                            <c:param name="crfStatus"><fmt:message key="not_started" bundle="${resword}"/></c:param>
-                            <c:param name="crfId" value="${0}"/>
-                            <c:param name="edcId" value="${dec.eventDefinitionCRF.id}"/>
-                            <c:param name="crfVersionId" value="${dec.eventDefinitionCRF.defaultVersionId}"/>
-                            <c:param name="crfName" value="${dec.eventDefinitionCRF.crf.name}"/>
-                            <c:param name="subjectId" value="${currRow.bean.studySubject.id}"/>
-                            <%-- create studySubject_subjectId which is subjectId of StudySubjectBean, since "subjectId" has been used in other places -10-18-2007  --%>
-                            <c:param name="studySubject_subjectId" value="${currRow.bean.studySubject.subjectId}"/>
-                            <c:param name="studySubjectId" value="${currRow.bean.studySubject.id}"/>
-                            <c:param name="studySubjectStatusId" value="${currRow.bean.studySubject.status.id}"/>
-                            <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-                        </c:import>
                         <%-- note that the below is for all events that have an ID of 0, ie they dont exist yet --%>
                         <c:choose>
                             <c:when test="${event.studyEvent.subjectEventStatus.id==7}">
@@ -423,26 +363,19 @@
         <!-- <td class="table_cell">&nbsp;</td>-->
 
         <td class="table_cell_shaded">
-            <c:import url="../submit/eventLayer.jsp">
-                <c:param name="colCount" value="1"/>
-                <c:param name="rowCount" value="${eblRowCount}"/>
-                <c:param name="eventId" value="${event.studyEvent.id}"/>
-                <c:param name="eventStatus"><fmt:message key="not_scheduled" bundle="${resterm}"/></c:param>
-                <c:param name="eventName" value="${studyEventDef.name}"/>
-                <c:param name="subjectId" value="${currRow.bean.studySubject.id}"/>
-                <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-                <c:param name="eventSysStatus" value="${currRow.bean.studySubject.status.name}"/>
-                <c:param name="eventStatusName" value="not_scheduled"/>
-
-                <%--
-                <c:param name="eventStatusName" value="${event.studyEvent.subjectEventStatus.name}"/>
-                --%>
-                <c:param name="eventDefId" value="${event.studyEventDefinition.id}"/>
-                <c:param name="module" value="${module}"/>
-            </c:import>
-            <img src="images/icon_NotStarted.gif"  border="0" style="position: relative; left: 7px;">
-            </a><img name="ExpandIcon_<c:out value="${currRow.bean.studySubject.label}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>" src="images/icon_blank.gif" width="15" height="15" style="position: relative; left: 8px;">
-
+            <div class="clinexia-schedule-cell">
+                <div class="clinexia-schedule-visit">
+                    <div class="clinexia-schedule-visit-header">
+                        <span class="clinexia-schedule-status clinexia-schedule-status-empty">Not Scheduled</span>
+                    </div>
+                    <div class="clinexia-schedule-actions">
+                        <span class="clinexia-inline-empty">No form assigned</span>
+                        <c:if test="${module != 'submit' || !userRole.monitor}">
+                            <a class="clinexia-inline-action clinexia-inline-action-main clinexia-inline-action-primary" href="CreateNewStudyEvent?studySubjectId=<c:out value='${currRow.bean.studySubject.id}'/>&studyEventDefinition=<c:out value='${event.studyEventDefinition.id}'/>">Schedule Visit</a>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
         </td>
 
         <td class="table_cell">&nbsp;</td>
@@ -452,23 +385,6 @@
         <c:set var="edcNum" value="0"/>
         <c:forEach var="edc" items="${eventDefCRFs}">
             <td class="table_cell_shaded">
-                <c:import url="../submit/eventCrfLayer.jsp">
-                    <c:param name="colCount" value="${edcNum}"/>
-                    <c:param name="rowCount" value="${eblRowCount}"/>
-                    <c:param name="eventId" value="${event.studyEvent.id}"/>
-                    <c:param name="crfStatus"><fmt:message key="not_started" bundle="${resword}"/></c:param>
-                    <c:param name="crfId" value="${0}"/>
-                    <c:param name="edcId" value="${edc.id}"/>
-                    <c:param name="crfVersionId" value="${edc.defaultVersionId}"/>
-                    <c:param name="crfName" value="${edc.crf.name}"/>
-                    <c:param name="subjectId" value="${currRow.bean.studySubject.id}"/>
-                    <%-- create studySubject_subjectId which is subjectId of StudySubjectBean, since "subjectId" has been used in other places -10-18-2007  --%>
-                    <c:param name="studySubject_subjectId" value="${currRow.bean.studySubject.subjectId}"/>
-                    <c:param name="studySubjectId" value="${currRow.bean.studySubject.id}"/>
-                    <c:param name="studySubjectStatusId" value="${currRow.bean.studySubject.status.id}"/>
-                    <c:param name="subjectName" value="${currRow.bean.studySubject.label}"/>
-                    <c:param name="module" value="${module}"/>
-                </c:import>
                 <c:choose>
                     <c:when test="${currRow.bean.studySubject.status.id != 5 && currRow.bean.studySubject.status.id != 7}">
                         <img name="CRFicon_<c:out value="${eblRowCount}"/>_<c:out value="${eventCRFNum-1}"/>_<c:out value="${currRow.bean.studySubject.label}"/>" src="images/CRF_status_icon_Scheduled.gif" border="0">

@@ -60,10 +60,10 @@
             <div>
                 <span class="clinexia-section-kicker">Patient Directory</span>
                 <h2>Patients</h2>
-                <p>Review patient status, site context and visit progress with a cleaner product-facing view.</p>
+                <p>Review each patient like an active pipeline: status, site, latest visit and next action in one place.</p>
             </div>
             <c:if test="${study.status.available}">
-                <a class="clinexia-primary-action" href="AddNewSubject">Add Patient</a>
+                <a class="clinexia-primary-action clinexia-patients-primary-cta" href="AddNewSubject">+ Add Patient</a>
             </c:if>
         </div>
 
@@ -132,13 +132,14 @@
                         <c:set var="patientSiteName" value="${empty row.bean.siteName ? study.name : row.bean.siteName}" />
 
                         <tr class="clinexia-patient-row"
+                            data-url="ViewStudySubject?id=<c:out value="${row.bean.studySubject.id}"/>&module=manage"
                             data-patient-id="${fn:toLowerCase(row.bean.studySubject.label)}"
                             data-status="${fn:toLowerCase(patientStatusLabel)}"
                             data-site="${fn:toLowerCase(patientSiteName)}">
                             <td>
                                 <div class="clinexia-patient-id">
                                     <a href="ViewStudySubject?id=<c:out value="${row.bean.studySubject.id}"/>&module=manage"><c:out value="${row.bean.studySubject.label}"/></a>
-                                    <span><c:out value="${row.bean.studySubject.oid}"/></span>
+                                    <span class="clinexia-patient-meta">Internal reference <c:out value="${row.bean.studySubject.oid}"/></span>
                                 </div>
                             </td>
                             <td>
@@ -162,7 +163,7 @@
                                 </div>
                             </td>
                             <td>
-                                <a class="clinexia-table-action" href="ViewStudySubject?id=<c:out value="${row.bean.studySubject.id}"/>&module=manage">View</a>
+                                <a class="clinexia-table-action clinexia-table-action-open" href="ViewStudySubject?id=<c:out value="${row.bean.studySubject.id}"/>&module=manage">Open</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -429,6 +430,34 @@
             byId('patientDirectorySearch').addEventListener('input', applyPatientDirectoryFilters);
             byId('patientDirectoryStatus').addEventListener('change', applyPatientDirectoryFilters);
             byId('patientDirectorySite').addEventListener('change', applyPatientDirectoryFilters);
+
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].addEventListener('click', function(event) {
+                    var target = event.target || event.srcElement;
+                    var tagName = target && target.tagName ? target.tagName.toLowerCase() : '';
+                    if (tagName === 'a' || tagName === 'button' || tagName === 'input' || tagName === 'select' || tagName === 'label') {
+                        return;
+                    }
+
+                    var url = this.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+
+                rows[i].addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        var url = this.getAttribute('data-url');
+                        if (url) {
+                            window.location.href = url;
+                        }
+                    }
+                });
+
+                rows[i].setAttribute('tabindex', '0');
+                rows[i].setAttribute('role', 'link');
+            }
 
             applyPatientDirectoryFilters();
         }

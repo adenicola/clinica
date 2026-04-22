@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <fmt:setBundle basename="org.akaza.openclinica.i18n.format" var="resformat"/>
 <fmt:setBundle basename="org.akaza.openclinica.i18n.words" var="resword"/>
@@ -47,6 +48,24 @@
 
 <c:set var="location" value="" />
 <c:set var="requestStudySubjectFalse" value="no" />
+<c:set var="autoStartRequested" value="${param.autostart == 'baseline'}" />
+<c:set var="autoStartDefinitionId" value="" />
+<c:set var="autoStartDefinitionName" value="" />
+
+<c:if test="${autoStartRequested}">
+    <c:forEach var="definition" items="${eventDefinitions}">
+        <c:if test="${empty autoStartDefinitionId && fn:contains(fn:toLowerCase(definition.name), 'baseline')}">
+            <c:set var="autoStartDefinitionId" value="${definition.id}" />
+            <c:set var="autoStartDefinitionName" value="${definition.name}" />
+        </c:if>
+    </c:forEach>
+    <c:if test="${empty autoStartDefinitionId && fn:length(eventDefinitions) == 1}">
+        <c:forEach var="definition" items="${eventDefinitions}" begin="0" end="0">
+            <c:set var="autoStartDefinitionId" value="${definition.id}" />
+            <c:set var="autoStartDefinitionName" value="${definition.name}" />
+        </c:forEach>
+    </c:if>
+</c:if>
 
 <!-- TODO: HOW TO DEAL WITH PRESET VALUES THAT AREN'T STRINGS? -->
 <!-- TODO: CAN I USE PUBLIC STATIC MEMBERS HERE? -->
@@ -132,7 +151,7 @@
 
   }
 
-  function leftnavExpand(strLeftNavRowElementName){
+ function leftnavExpand(strLeftNavRowElementName){
     var objLeftNavRowElement;
 
     objLeftNavRowElement = MM_findObj(strLeftNavRowElementName);
@@ -147,12 +166,53 @@
         }
       }
     }
+
+  function clinexiaAutoStartVisit() {
+    var shouldAutoStart = "${autoStartRequested}";
+    var definitionId = "${autoStartDefinitionId}";
+    if (shouldAutoStart !== "true" || !definitionId) {
+      return;
+    }
+
+    var form = document.getElementById("createStudyEventForm");
+    if (!form || !form.elements["studyEventDefinition"]) {
+      return;
+    }
+
+    form.elements["studyEventDefinition"].value = definitionId;
+    window.setTimeout(function () {
+      form.submit();
+    }, 120);
+  }
+
+  if (window.addEventListener) {
+    window.addEventListener("load", clinexiaAutoStartVisit);
+  } else if (window.attachEvent) {
+    window.attachEvent("onload", clinexiaAutoStartVisit);
+  }
   
    //-->
 </script>
 <P><fmt:message key="field_required" bundle="${resword}"/></P>
 
-<form action="CreateNewStudyEvent" method="post">
+<c:if test="${autoStartRequested}">
+    <div class="clinexia-patient-empty">
+        <div class="clinexia-patient-empty-title">
+            <c:choose>
+                <c:when test="${not empty autoStartDefinitionName}">Starting <c:out value="${autoStartDefinitionName}" />...</c:when>
+                <c:otherwise>Preparing the first visit...</c:otherwise>
+            </c:choose>
+        </div>
+        <p class="clinexia-patient-empty-copy">
+            <c:choose>
+                <c:when test="${not empty autoStartDefinitionName}">Clinexia is using the existing visit flow to create the first visit and open its first form automatically.</c:when>
+                <c:otherwise>Baseline was not available to auto-start, so you can choose the first visit manually below.</c:otherwise>
+            </c:choose>
+        </p>
+    </div>
+</c:if>
+
+<form action="CreateNewStudyEvent" method="post" id="createStudyEventForm">
 <jsp:include page="../include/showSubmitted.jsp" />
 
 <div style="width: 600px">

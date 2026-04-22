@@ -32,10 +32,10 @@
 <body>
 <div id="headerDiv">
     <fmt:setBundle basename="org.akaza.openclinica.i18n.words" var="resword"/>
-    <div id="logoDiv" class="clinexia-brand" aria-label="Clinexia">
+    <a id="logoDiv" class="clinexia-brand" aria-label="Clinexia Dashboard" href="MainMenu" title="Clinexia Dashboard">
         <span class="clinexia-brand-mark" aria-hidden="true"></span>
         <span class="clinexia-brand-text">Clinexia</span>
-    </div>
+    </a>
     <!-- the sub-menu, or alternative menu, displays if JavaScript is disabled-->
     <div id="menuContainer">
         <noscript>

@@ -52,7 +52,7 @@
 </c:choose>
 <!-- This Event Status box has been modified to accomodate repeating events in a scrollable box -->
 
-<div id="Lock_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>" style="position: absolute; visibility: hidden; z-index: 3; width: 50px; height: 30px; top: 0px;">
+<div id="Lock_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>" class="clinexia-context-lock" style="position: absolute; visibility: hidden; z-index: 3; width: 50px; height: 30px; top: 0px;">
 		
     <c:choose>		               
 	 <c:when test="${currEvent.repeatingNum>1}">
@@ -72,7 +72,7 @@
 			  
 </div>
 		
-	<div id="Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>" style="position: absolute; visibility: hidden; z-index: 3;width: <c:out value="${divWidth}"/>px; top: 0px; float: left;">
+	<div id="Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>" class="menu-contextual clinexia-context-menu" style="position: absolute; visibility: hidden; z-index: 3;width: <c:out value="${divWidth}"/>px; top: 0px; float: left;" onmouseleave="hideContextMenuIfUnpinned('Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', 'ExpandIcon_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', 'Lock_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>');">
 		<!-- These DIVs define shaded box borders -->
 		<div class="box_T"><div class="box_L"><div class="box_R"><div class="box_B"><div class="box_TL">
     <div class="box_TR"><div class="box_BL"><div class="box_BR">
@@ -552,8 +552,8 @@
 
               javascript:leftnavExpand('Menu_off_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>');"
               onmouseover=
-			  "moveObject('Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', event); setImage('ExpandIcon_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>','images/icon_expand.gif');"
+			  "previewContextMenu('Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', this, 'ExpandIcon_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>');"
 				onmouseout=
-				"layersShowOrHide('hidden','Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>'); setImage('ExpandIcon_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>','images/icon_blank.gif');"
+				"hideContextMenuIfUnpinned('Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', 'ExpandIcon_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', 'Lock_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>');"
 				onClick=
-				"layersShowOrHide('visible','Lock_all'); LockObject('Lock_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', event);">
+				"return pinContextMenu('Event_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', 'Lock_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', this, 'ExpandIcon_<c:out value="${subjectName}"/>_<c:out value="${count}"/>_<c:out value="${eblRowCount}"/>', event);">
